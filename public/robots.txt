@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://분양웹사이트제작.com/sitemap.xml
