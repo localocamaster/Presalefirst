@@ -19,6 +19,15 @@
   }
 }
 
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -41,7 +50,15 @@
   .animate-marquee {
     animation: marquee 18s linear infinite;
   }
-  .marquee-pause-on-hover:hover .animate-marquee {
+  .animate-marquee-reverse {
+    animation: marquee-reverse 22s linear infinite;
+  }
+  .animate-marquee-slow {
+    animation: marquee 26s linear infinite;
+  }
+  .marquee-pause-on-hover:hover .animate-marquee,
+  .marquee-pause-on-hover:hover .animate-marquee-reverse,
+  .marquee-pause-on-hover:hover .animate-marquee-slow {
     animation-play-state: paused;
   }
 }

@@ -388,9 +388,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <SectionTitle subtitle="신뢰할 수 있는 파트너" title="전국 3,000개 이상의 현장이 함께했습니다" />
           <div className="relative mt-10 space-y-4">
-            {clientRows.map((row, rowIdx) => (
+            {clientRows.map((row, rowIdx) => {
+              const marqueeClass = ['animate-marquee', 'animate-marquee-reverse', 'animate-marquee-slow'][rowIdx] || 'animate-marquee';
+              return (
               <div key={rowIdx} className="overflow-hidden marquee-pause-on-hover">
-                <div className="flex animate-marquee">
+                <div className={`flex ${marqueeClass}`}>
                   {[...row, ...row].map((c, i) => (
                     <div key={`${rowIdx}-${c}-${i}`} className="flex-shrink-0 mx-2 sm:mx-3 flex items-center justify-center px-4 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl bg-white border border-gray-100 shadow-sm">
                       <span className="text-xs sm:text-sm font-medium text-gray-600 whitespace-nowrap">{c}</span>
@@ -398,7 +400,8 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
