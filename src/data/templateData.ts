@@ -232,3 +232,191 @@ export function createTemplateData(overrides: Partial<TemplateData> & { id: stri
   const base = templateSamples[overrides.id] ?? templateSamples.zenith;
   return { ...base, ...overrides };
 }
+
+// ── zenith 기반 변형 ──
+templateSamples['hangang'] = {
+  ...templateSamples.zenith,
+  id: 'hangang',
+  projectName: '한강 아이파크 시티',
+  projectNameEn: "I'PARK CITY",
+  brandLine: '용산',
+  tagline: '한강변 프리미엄 주거의 새로운 기준',
+  location: '서울 용산구',
+  address: '서울특별시 용산구 이촌동 302-1',
+  types: [
+    { name: '84㎡', area: '전용 84㎡', price: '18억원~' },
+    { name: '101㎡', area: '전용 101㎡', price: '22억원~' },
+    { name: '124㎡', area: '전용 124㎡', price: '28억원~' },
+  ],
+  presaleDate: '2026년 4월 분양 예정',
+  features: ['한강뷰', '역세권', '대형 단지'],
+  theme: {
+    primary: '#0d6e3f',
+    headerBg: 'rgba(255,255,255,0.97)',
+    footerText: '한강 아이파크 시티 분양 홍보관',
+  },
+};
+
+templateSamples['songpa'] = {
+  ...templateSamples.zenith,
+  id: 'songpa',
+  projectName: '송파 헬리오시티',
+  projectNameEn: 'HELIO CITY',
+  brandLine: '송파',
+  tagline: '송파의 새로운 주거 랜드마크',
+  location: '서울 송파구',
+  address: '서울특별시 송파구 가락동 일원',
+  types: [
+    { name: '59㎡', area: '전용 59㎡', price: '12억원~' },
+    { name: '84㎡', area: '전용 84㎡', price: '15억원~' },
+    { name: '101㎡', area: '전용 101㎡', price: '19억원~' },
+  ],
+  presaleDate: '2026년 6월 분양 예정',
+  features: ['대단지', '교통 허브', '학군'],
+  theme: {
+    primary: '#c75000',
+    headerBg: 'rgba(255,255,255,0.97)',
+    footerText: '송파 헬리오시티 분양 홍보관',
+  },
+};
+
+// ── luxia 기반 변형 ──
+templateSamples['apgujeong'] = {
+  ...templateSamples.luxia,
+  id: 'apgujeong',
+  projectName: '압구정 디오르 하우스',
+  projectNameEn: 'D I O R',
+  brandLine: 'Apgujeong Luxury Residence',
+  tagline: '압구정에서 만나는 최상의 라이프',
+  location: '서울 강남구 압구정동',
+  address: '서울특별시 강남구 압구정로 123',
+  types: [
+    { name: '84㎡', area: '전용 84㎡', price: '25억원~' },
+    { name: '114㎡', area: '전용 114㎡', price: '35억원~' },
+    { name: '149㎡', area: '전용 149㎡', price: '48억원~' },
+  ],
+  presaleDate: '2026년 하반기 분양 예정',
+  features: ['압구정 핵심', '하이엔드', '프라이빗'],
+  theme: {
+    primary: '#ffffff',
+    headerBg: 'rgba(10,10,10,0.95)',
+    footerText: 'D I O R  A P G U J E O N G',
+  },
+};
+
+templateSamples['yongsan'] = {
+  ...templateSamples.luxia,
+  id: 'yongsan',
+  projectName: '용산 더 시티 센트럴',
+  projectNameEn: 'T H E  C I T Y',
+  brandLine: 'Yongsan Central Park',
+  tagline: '용산공원 옆 하이엔드 레지던스',
+  location: '서울 용산구',
+  address: '서울특별시 용산구 한강대로 405',
+  types: [
+    { name: '84㎡', area: '전용 84㎡', price: '20억원~' },
+    { name: '114㎡', area: '전용 114㎡', price: '28억원~' },
+    { name: '149㎡', area: '전용 149㎡', price: '38억원~' },
+  ],
+  presaleDate: '2026년 5월 분양 예정',
+  features: ['용산공원', '한강뷰', '프리미엄'],
+  theme: {
+    primary: '#ffffff',
+    headerBg: 'rgba(10,10,10,0.95)',
+    footerText: 'T H E  C I T Y  Y O N G S A N',
+  },
+};
+
+// ── ssy 기반 변형 ──
+templateSamples['haeundae'] = {
+  ...templateSamples.ssy,
+  id: 'haeundae',
+  projectName: '해운대 자이 오션프론트',
+  projectNameEn: 'XI OCEAN',
+  brandLine: '해운대',
+  tagline: '해운대 오션뷰의 정점',
+  location: '부산 해운대구',
+  address: '부산광역시 해운대구 우동 1234',
+  types: [
+    { name: '84㎡', area: '전용 84㎡', price: '7억 5,000만원~' },
+    { name: '101㎡', area: '전용 101㎡', price: '9억 2,000만원~' },
+    { name: '124㎡', area: '전용 124㎡', price: '11억원~' },
+  ],
+  presaleDate: '2026년 3월 분양 예정',
+  features: ['오션뷰', '해운대 핵심', '프리미엄'],
+  theme: {
+    primary: '#0891b2',
+    headerBg: 'rgba(255,255,255,0.97)',
+    footerText: '해운대 자이 오션프론트 분양 홍보관',
+  },
+};
+
+templateSamples['gwangan'] = {
+  ...templateSamples.ssy,
+  id: 'gwangan',
+  projectName: '광안 롯데캐슬 파크뷰',
+  projectNameEn: 'LOTTE CASTLE',
+  brandLine: '광안',
+  tagline: '광안리 바다를 품은 프리미엄 단지',
+  location: '부산 수영구',
+  address: '부산광역시 수영구 광안동 일원',
+  types: [
+    { name: '74㎡', area: '전용 74㎡', price: '5억원~' },
+    { name: '84㎡', area: '전용 84㎡', price: '6억 2,000만원~' },
+    { name: '101㎡', area: '전용 101㎡', price: '7억 5,000만원~' },
+  ],
+  presaleDate: '2026년 7월 분양 예정',
+  features: ['광안리뷰', '역세권', '대형 단지'],
+  theme: {
+    primary: '#1e3a5f',
+    headerBg: 'rgba(255,255,255,0.97)',
+    footerText: '광안 롯데캐슬 파크뷰 분양 홍보관',
+  },
+};
+
+// ── dalseo 기반 변형 ──
+templateSamples['suseong'] = {
+  ...templateSamples.dalseo,
+  id: 'suseong',
+  projectName: '수성 SK뷰 레이크파크',
+  projectNameEn: 'SK VIEW',
+  brandLine: '수성',
+  tagline: '수성못을 품은 프리미엄 리빙',
+  location: '대구 수성구',
+  address: '대구광역시 수성구 두산동 일원',
+  types: [
+    { name: '59㎡', area: '전용 59㎡', price: '3억 5,000만원~' },
+    { name: '84㎡', area: '전용 84㎡', price: '4억 8,000만원~' },
+    { name: '101㎡', area: '전용 101㎡', price: '5억 9,000만원~' },
+  ],
+  presaleDate: '2026년 4월 분양 예정',
+  features: ['수성못뷰', '학군', '녹지'],
+  theme: {
+    primary: '#0369a1',
+    headerBg: 'rgba(255,255,255,0.97)',
+    footerText: '수성 SK뷰 레이크파크 분양 홍보관',
+  },
+};
+
+templateSamples['gimpo'] = {
+  ...templateSamples.dalseo,
+  id: 'gimpo',
+  projectName: '김포 e편한세상 레이크뷰',
+  projectNameEn: 'e LAKE VIEW',
+  brandLine: '김포',
+  tagline: '김포한강신도시의 새로운 프리미엄',
+  location: '경기 김포시',
+  address: '경기도 김포시 구래동 일원',
+  types: [
+    { name: '59㎡', area: '전용 59㎡', price: '3억원~' },
+    { name: '84㎡', area: '전용 84㎡', price: '4억 2,000만원~' },
+    { name: '101㎡', area: '전용 101㎡', price: '5억원~' },
+  ],
+  presaleDate: '2026년 8월 분양 예정',
+  features: ['한강신도시', '교통', '자연환경'],
+  theme: {
+    primary: '#92400e',
+    headerBg: 'rgba(255,255,255,0.97)',
+    footerText: '김포 e편한세상 레이크뷰 분양 홍보관',
+  },
+};

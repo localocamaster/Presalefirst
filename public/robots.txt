@@ -1,4 +1,18 @@
 User-agent: *
 Allow: /
+Disallow: /demo/
+Disallow: /p/
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Yeti
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
 
 Sitemap: https://분양웹사이트제작.com/sitemap.xml

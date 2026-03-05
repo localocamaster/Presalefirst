@@ -3,7 +3,22 @@ import { loadProjectData } from '../data/projectLoader';
 import { getProjectConfig } from '../data/projects/projectRegistry';
 import TemplateLayout from '../templates/TemplateLayout';
 
-const validSlugs = ['zenith', 'luxia', 'ssy', 'dalseo'] as const;
+type TemplateTheme = 'zenith' | 'luxia' | 'ssy' | 'dalseo';
+
+const themeMap: Record<string, TemplateTheme> = {
+  zenith: 'zenith',
+  hangang: 'zenith',
+  songpa: 'zenith',
+  luxia: 'luxia',
+  apgujeong: 'luxia',
+  yongsan: 'luxia',
+  ssy: 'ssy',
+  haeundae: 'ssy',
+  gwangan: 'ssy',
+  dalseo: 'dalseo',
+  suseong: 'dalseo',
+  gimpo: 'dalseo',
+};
 
 export default function Demo() {
   const { slug, projectId: projectIdParam } = useParams();
@@ -11,19 +26,23 @@ export default function Demo() {
   const projectIdFromQuery = searchParams.get('project') ?? undefined;
   const projectId = projectIdParam ?? projectIdFromQuery;
 
-  // /p/:projectId 경로: projectConfig에서 templateId 추출
-  // /demo/:slug 경로: slug가 templateId
-  let templateId: (typeof validSlugs)[number] | null = null;
+  let templateSlug: string | null = null;
+  let theme: TemplateTheme | null = null;
+
   if (projectIdParam) {
     const config = getProjectConfig(projectIdParam);
-    templateId = config?.templateId ?? null;
-  } else if (slug && validSlugs.includes(slug as (typeof validSlugs)[number])) {
-    templateId = slug as (typeof validSlugs)[number];
+    if (config) {
+      templateSlug = config.templateId;
+      theme = config.templateId;
+    }
+  } else if (slug && themeMap[slug]) {
+    templateSlug = slug;
+    theme = themeMap[slug];
   }
 
-  const data = templateId ? loadProjectData(templateId, projectId) : null;
+  const data = templateSlug ? loadProjectData(templateSlug, projectId) : null;
 
-  if (!data) {
+  if (!data || !theme) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -36,5 +55,5 @@ export default function Demo() {
     );
   }
 
-  return <TemplateLayout data={data} theme={templateId!} />;
+  return <TemplateLayout data={data} theme={theme} />;
 }

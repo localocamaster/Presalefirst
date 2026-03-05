@@ -13,10 +13,12 @@ import BlogPost from './pages/BlogPost';
 import Inquiry from './pages/Inquiry';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import Map from './pages/Map';
+import MapRegion from './pages/MapRegion';
 
 function Layout() {
   const { pathname } = useLocation();
-  const isDemo = pathname.startsWith('/demo');
+  const isDemo = pathname.startsWith('/demo') || pathname.startsWith('/p/');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -35,6 +37,8 @@ function Layout() {
             <Route path="/inquiry" element={<Inquiry />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/map" element={<Map />} />
+            <Route path="/map/:slug" element={<MapRegion />} />
         </Routes>
       </main>
       {!isDemo && <Footer />}

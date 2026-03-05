@@ -9,15 +9,19 @@ interface Props {
   title: string;
   description: string;
   path?: string;
+  /** true면 title을 래핑 없이 그대로 사용 */
+  exactTitle?: boolean;
   /** JSON-LD 구조화 데이터 (단일 객체 또는 배열) */
   schema?: object | object[];
 }
 
-export default function SeoHead({ title, description, path = '', schema }: Props) {
+export default function SeoHead({ title, description, path = '', exactTitle, schema }: Props) {
   const isHome = path === '/' || path === '';
-  const fullTitle = isHome
-    ? '분양웹사이트제작 분양홍보 홈페이지 제작 전문 솔루션 | 분양퍼스트'
-    : `분양웹사이트제작 ${title} | 분양퍼스트`;
+  const fullTitle = exactTitle
+    ? title
+    : isHome
+      ? '분양웹사이트제작 분양홍보 홈페이지 제작 전문 솔루션 | 분양퍼스트'
+      : `분양웹사이트제작 ${title} | 분양퍼스트`;
   const url = `${SITE_URL}${path || '/'}`;
 
   useEffect(() => {
@@ -43,19 +47,22 @@ export default function SeoHead({ title, description, path = '', schema }: Props
     canonical.setAttribute('href', url);
 
     setMeta('description', description);
+    setMeta('robots', 'index, follow');
+    setMeta('googlebot', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
     setMeta('og:title', fullTitle, true);
     setMeta('og:description', description, true);
     setMeta('og:url', url, true);
     setMeta('og:type', 'website', true);
+    setMeta('og:locale', 'ko_KR', true);
     setMeta('og:site_name', SITE_NAME, true);
     setMeta('og:image', OG_IMAGE, true);
     setMeta('og:image:width', '1200', true);
     setMeta('og:image:height', '630', true);
     setMeta('og:image:type', 'image/png', true);
-    setMeta('twitter:card', 'summary_large_image', true);
-    setMeta('twitter:image', OG_IMAGE, true);
-    setMeta('twitter:title', fullTitle, true);
-    setMeta('twitter:description', description, true);
+    setMeta('twitter:card', 'summary_large_image');
+    setMeta('twitter:image', OG_IMAGE);
+    setMeta('twitter:title', fullTitle);
+    setMeta('twitter:description', description);
   }, [fullTitle, description, url]);
 
   return schema ? <JsonLd data={schema} /> : null;

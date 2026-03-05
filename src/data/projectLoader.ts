@@ -9,7 +9,7 @@ import { getProjectConfig } from './projects/projectRegistry';
  * @param projectId - 고객 프로젝트 ID (없으면 샘플 데이터 사용)
  */
 export function loadProjectData(
-  templateId: 'zenith' | 'luxia' | 'ssy' | 'dalseo',
+  templateId: string,
   projectId?: string
 ): TemplateData | null {
   const base = templateSamples[templateId];

@@ -35,6 +35,7 @@ export default function Footer() {
               <li><Link to="/blog" className="hover:text-white transition-colors">블로그</Link></li>
               <li><Link to="/terms" className="hover:text-white transition-colors">이용약관</Link></li>
               <li><Link to="/privacy" className="hover:text-white transition-colors">개인정보처리방침</Link></li>
+              <li><Link to="/map" className="hover:text-white transition-colors">지역별 제작</Link></li>
             </ul>
           </div>
 

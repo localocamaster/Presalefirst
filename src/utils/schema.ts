@@ -20,7 +20,12 @@ export function getOrganizationSchema() {
     name: '분양퍼스트',
     alternateName: SITE_NAME,
     url: SITE_URL,
-    logo: OG_IMAGE,
+    logo: {
+      '@type': 'ImageObject',
+      url: OG_IMAGE,
+      width: 1200,
+      height: 630,
+    },
     description: '분양 홈페이지 제작 전문. 19만원부터 24시간 내 제작. 분양상담사를 위한 홈페이지 솔루션.',
     contactPoint: {
       '@type': 'ContactPoint',
@@ -50,7 +55,12 @@ export function getWebSiteSchema() {
     publisher: {
       '@type': 'Organization',
       name: '분양퍼스트',
-      logo: OG_IMAGE,
+      logo: {
+        '@type': 'ImageObject',
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+      },
     },
     inLanguage: 'ko-KR',
   };
@@ -133,7 +143,12 @@ export function getBlogPostingSchema(params: {
     publisher: {
       '@type': 'Organization',
       name: '분양퍼스트',
-      logo: OG_IMAGE,
+      logo: {
+        '@type': 'ImageObject',
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+      },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -199,6 +214,105 @@ export function getProductSchema(plans: { name: string; price: string; desc: str
       description: p.desc,
       price: parseKoreanPrice(p.price),
       priceCurrency: 'KRW',
+      url: `${SITE_URL}/pricing`,
+      availability: 'https://schema.org/InStock',
     })),
+  };
+}
+
+/** LocalBusiness 스키마 - 지역 SEO 페이지용 (2026 필수) */
+export function getLocalBusinessSchema(params: {
+  region: string;
+  description: string;
+  path: string;
+}) {
+  const { region, description, path } = params;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    '@id': `${SITE_URL}${path}#business`,
+    name: `분양퍼스트 - ${region} 분양홈페이지 제작`,
+    description,
+    url: `${SITE_URL}${path}`,
+    image: OG_IMAGE,
+    telephone: '+82-507-1339-3982',
+    email: 'localoca.master@gmail.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '인하로 100 인하대학교 인하드림센터 1관 206에이호',
+      addressLocality: '인천광역시',
+      addressRegion: '미추홀구',
+      postalCode: '22212',
+      addressCountry: 'KR',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 37.4507,
+      longitude: 126.6572,
+    },
+    areaServed: {
+      '@type': 'City',
+      name: region,
+    },
+    priceRange: '₩190,000 - ₩290,000',
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '09:00',
+      closes: '18:00',
+    },
+    sameAs: [SITE_URL],
+  };
+}
+
+/** Service 스키마 - 지역 서비스 페이지용 */
+export function getServiceSchema(params: {
+  region: string;
+  description: string;
+  path: string;
+}) {
+  const { region, description, path } = params;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: `${region} 분양홈페이지 제작`,
+    description,
+    url: `${SITE_URL}${path}`,
+    provider: {
+      '@type': 'ProfessionalService',
+      name: '분양퍼스트',
+      url: SITE_URL,
+    },
+    areaServed: {
+      '@type': 'City',
+      name: region,
+    },
+    serviceType: '분양 홈페이지 제작',
+    offers: [
+      {
+        '@type': 'Offer',
+        name: '베이직',
+        price: 190000,
+        priceCurrency: 'KRW',
+        description: '핵심 기능만 담은 시작 플랜',
+        availability: 'https://schema.org/InStock',
+      },
+      {
+        '@type': 'Offer',
+        name: '디럭스',
+        price: 240000,
+        priceCurrency: 'KRW',
+        description: '관심고객 관리까지 한 번에',
+        availability: 'https://schema.org/InStock',
+      },
+      {
+        '@type': 'Offer',
+        name: '프리미엄',
+        price: 290000,
+        priceCurrency: 'KRW',
+        description: '광고 효율까지 잡는 올인원',
+        availability: 'https://schema.org/InStock',
+      },
+    ],
   };
 }
