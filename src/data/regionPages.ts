@@ -1,14 +1,18 @@
-export interface RegionPage {
-  slug: string;
-  region: string;
-  title: string;
-  metaTitle: string;
-  metaDescription: string;
-  heroHeading: string;
-  heroSub: string;
-  content: { type: 'h2' | 'h3' | 'p' | 'ul' | 'break'; text?: string; items?: string[] }[];
-  faqs: { q: string; a: string }[];
-}
+import type { RegionPage } from './regionTypes';
+import { seoulSubPages } from './regions/seoul';
+import { gyeonggiSubPages } from './regions/gyeonggi-sub';
+import { daeguPages } from './regions/daegu';
+import { daejeonPages } from './regions/daejeon';
+import { gwangjuPages } from './regions/gwangju';
+import { incheonPages } from './regions/incheon';
+import { sejongPages } from './regions/sejong';
+import { jejuPages } from './regions/jeju';
+import { busanPages } from './regions/busan';
+import { chungnamPages } from './regions/chungnam';
+import { jeonbukPages } from './regions/jeonbuk';
+import { gyeongnamPages } from './regions/gyeongnam';
+
+export type { RegionPage };
 
 export const regionPages: RegionPage[] = [
   {
@@ -111,6 +115,7 @@ export const regionPages: RegionPage[] = [
       },
     ],
   },
+  ...seoulSubPages,
   {
     slug: 'gyeonggi',
     region: '경기',
@@ -210,6 +215,17 @@ export const regionPages: RegionPage[] = [
       },
     ],
   },
+  ...gyeonggiSubPages,
+  ...busanPages,
+  ...daeguPages,
+  ...daejeonPages,
+  ...gwangjuPages,
+  ...incheonPages,
+  ...sejongPages,
+  ...jejuPages,
+  ...chungnamPages,
+  ...jeonbukPages,
+  ...gyeongnamPages,
 ];
 
 /** 전체 지역 목록 (지도 페이지에서 사용) */
