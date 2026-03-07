@@ -54,9 +54,8 @@ const solutions = [
 
 const samples = [
   { title: '천안 두산위브더제니스 모델하우스', type: '모던형', desc: '현대적이고 세련된 UI로 분양 정보를 효과적으로 전달하는 홈페이지', slug: 'zenith', thumb: '/images/demo/zenith/slide1.png' },
-  { title: '청담 루시아 514 더 테라스', type: '모던형', desc: '하이엔드 감성의 다크 테마와 럭셔리한 디자인의 분양 홈페이지', slug: 'luxia', thumb: '/images/demo/luxia/slide1.png' },
-  { title: '서면 쌍용 더 플래티넘', type: '모던형', desc: '깔끔한 화이트 톤과 블루 포인트로 신뢰감을 주는 모던한 분양 홈페이지', slug: 'ssy', thumb: '/images/demo/ssy/slide1.png' },
-  { title: '달서 푸르지오 시그니처', type: '모던형', desc: '푸르지오만의 세련된 그린 컬러와 체계적인 정보 배치가 돋보이는 홈페이지', slug: 'dalseo', thumb: '/images/demo/dalseo/slide1.png' },
+  { title: '화성우방아이유쉘', type: '카테고리형', desc: '탭, 캐러셀, 체크리스트 등 다양한 UI로 구성된 인터랙티브 분양 홈페이지', slug: 'woobangiushell', thumb: '/images/demo/zenith/slide1.png' },
+  { title: '프리미엘', type: '프리미엄형', desc: '골드 악센트의 다크 테마, 풀스크린 히어로 슬라이더와 프리미엄 섹션 구성의 고급 분양 홈페이지', slug: 'premium-priel', thumb: '/images/demo/premium/main-cg.webp' },
 ];
 
 const steps = [
@@ -294,7 +293,7 @@ export default function Home() {
       <section className="py-12 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <SectionTitle subtitle="포트폴리오" title="아파트 분양 홍보 홈페이지" description="분양홍보 홈페이지 제작 솔루션으로 간단하게 만들고 바로 홍보에 이용할 수 있습니다." />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
             {samples.map((s, i) => (
               <div key={i} className="group rounded-xl sm:rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
                 <div

@@ -17,8 +17,8 @@ export interface ProjectImageSection {
 
 /** 고객 프로젝트 설정 - 편집 가능한 필드만 포함 */
 export interface ProjectConfig {
-  /** 사용할 템플릿 (zenith | luxia | ssy | dalseo) */
-  templateId: 'zenith' | 'luxia' | 'ssy' | 'dalseo';
+  /** 사용할 템플릿 (zenith | luxia | ssy | dalseo | category) */
+  templateId: 'zenith' | 'luxia' | 'ssy' | 'dalseo' | 'category';
 
   /** 프로젝트 고유 ID (URL 등에 사용, 예: customer-001) */
   projectId: string;

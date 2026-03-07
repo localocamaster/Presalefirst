@@ -6,30 +6,28 @@ import SeoHead from '../components/SeoHead';
 import { getWebPageSchema } from '../utils/schema';
 
 
+const types = ['전체', '모던형', '카테고리형', '프리미엄형'] as const;
+
 const samples = [
   // 모던형
   { slug: 'zenith', title: '천안 두산위브더제니스 모델하우스', type: '모던형', desc: '현대적이고 세련된 UI로 분양 정보를 효과적으로 전달하는 홈페이지', thumb: '/images/demo/zenith/slide1.png' },
   { slug: 'ssy', title: '서면 쌍용 더 플래티넘', type: '모던형', desc: '깔끔한 화이트 톤과 블루 포인트로 신뢰감을 주는 모던한 분양 홈페이지', thumb: '/images/demo/ssy/slide1.png' },
   { slug: 'hangang', title: '한강 아이파크 시티', type: '모던형', desc: '그린 포인트 컬러와 깔끔한 레이아웃의 모던 분양 홈페이지', thumb: '/images/demo/zenith/slide5.png' },
-  { slug: 'haeundae', title: '해운대 자이 오션프론트', type: '모던형', desc: '시원한 블루 컬러로 오션뷰 단지의 매력을 전달하는 홈페이지', thumb: '/images/demo/ssy/slide3.png' },
-
-  // 프리미엄형
-  { slug: 'luxia', title: '청담 루시아 514 더 테라스', type: '프리미엄형', desc: '하이엔드 감성의 다크 테마와 럭셔리한 디자인의 분양 홈페이지', thumb: '/images/demo/luxia/slide1.png' },
-  { slug: 'apgujeong', title: '압구정 디오르 하우스', type: '프리미엄형', desc: '프리미엄 다크 테마로 고급 주거 브랜드의 품격을 표현한 홈페이지', thumb: '/images/demo/luxia/slide3.png' },
-  { slug: 'yongsan', title: '용산 더 시티 센트럴', type: '프리미엄형', desc: '도심 속 하이엔드 레지던스의 고급스러운 분위기를 담은 홈페이지', thumb: '/images/demo/luxia/slide5.png' },
 
   // 카테고리형
-  { slug: 'dalseo', title: '달서 푸르지오 시그니처', type: '카테고리형', desc: '세련된 그린 컬러와 체계적인 정보 배치가 돋보이는 홈페이지', thumb: '/images/demo/dalseo/slide1.png' },
-  { slug: 'suseong', title: '수성 SK뷰 레이크파크', type: '카테고리형', desc: '스카이블루 테마로 호수 조망 단지의 가치를 전달하는 홈페이지', thumb: '/images/demo/dalseo/slide4.png' },
-  { slug: 'gimpo', title: '김포 e편한세상 레이크뷰', type: '카테고리형', desc: '따뜻한 브라운 톤으로 자연 친화적 분위기를 연출한 홈페이지', thumb: '/images/demo/dalseo/slide6.png' },
+  { slug: 'woobangiushell', title: '화성우방아이유쉘', type: '카테고리형', desc: '탭, 캐러셀, 체크리스트 등 다양한 UI로 구성된 인터랙티브 분양 홈페이지', thumb: '/images/demo/zenith/slide1.png' },
+  { slug: 'gunsan-vivaldi', title: '군산 한라비발디 더프라임', type: '카테고리형', desc: '서브페이지 + 좌측 SNB 구조의 카테고리형 분양 홈페이지. 사업안내, 단지안내, 세대안내(평면도) 별도 페이지 제공', thumb: '/images/demo/zenith/slide1.png' },
 
-  // 풀페이지형
-  { slug: 'songpa', title: '송파 헬리오시티', type: '풀페이지형', desc: '오렌지 포인트 컬러로 활기찬 도시 생활을 표현한 풀페이지 홈페이지', thumb: '/images/demo/zenith/slide3.png' },
-  { slug: 'gwangan', title: '광안 롯데캐슬 파크뷰', type: '풀페이지형', desc: '딥네이비 컬러로 품격 있는 바다 조망 단지를 소개하는 홈페이지', thumb: '/images/demo/ssy/slide5.png' },
+  // 프리미엄형
+  { slug: 'premium-priel', title: '프리미엘', type: '프리미엄형', desc: '골드 악센트의 다크 테마, 풀스크린 히어로 슬라이더와 프리미엄 섹션 구성의 고급 분양 홈페이지', thumb: '/images/demo/premium/main-cg.webp' },
+  { slug: 'premium-oceancity', title: '오션시티', type: '프리미엄형', desc: '블루 악센트의 다크 테마, 해운대 오션뷰 초고층 레지던스 프리미엄 분양 홈페이지', thumb: '/images/demo/premium/premium-nature.webp' },
 ];
 
 export default function Samples() {
   const [previewSlug, setPreviewSlug] = useState<string | null>(null);
+  const [activeType, setActiveType] = useState<typeof types[number]>('전체');
+
+  const filtered = activeType === '전체' ? samples : samples.filter(s => s.type === activeType);
 
   return (
     <>
@@ -67,30 +65,54 @@ export default function Samples() {
       {/* Filter & Grid */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-              {samples.map((s) => (
-                <div key={s.slug} className="group rounded-xl overflow-hidden border border-gray-200 hover:border-primary/30 transition-colors">
-                  <div
-                    className="relative h-48 bg-gray-100 overflow-hidden cursor-pointer"
-                    onClick={() => setPreviewSlug(s.slug)}
-                  >
-                    <img src={s.thumb} alt={s.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <span className="px-4 py-2 bg-white rounded-lg text-sm font-semibold text-dark flex items-center gap-2 shadow-lg">
-                        미리보기 <ExternalLink className="w-4 h-4" />
-                      </span>
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10">
+            {types.map((t) => (
+              <button
+                key={t}
+                onClick={() => setActiveType(t)}
+                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-colors ${
+                  activeType === t
+                    ? 'bg-primary text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          {(activeType === '전체' ? (['모던형', '카테고리형', '프리미엄형'] as const) : [activeType]).map((type) => {
+            const group = samples.filter(s => s.type === type);
+            if (group.length === 0) return null;
+            return (
+              <div key={type} className="mb-16 last:mb-0">
+                <h2 className="text-xl sm:text-2xl font-bold text-dark text-center mb-8">{type}</h2>
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+                  {group.map((s) => (
+                    <div key={s.slug} className="group rounded-xl overflow-hidden border border-gray-200 hover:border-primary/30 transition-colors w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)]">
+                      <div
+                        className="relative h-48 bg-gray-100 overflow-hidden cursor-pointer"
+                        onClick={() => setPreviewSlug(s.slug)}
+                      >
+                        <img src={s.thumb} alt={s.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <span className="px-4 py-2 bg-white rounded-lg text-sm font-semibold text-dark flex items-center gap-2 shadow-lg">
+                            미리보기 <ExternalLink className="w-4 h-4" />
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-5">
+                        <h3 className="font-bold text-dark mb-2 break-words">{s.title}</h3>
+                        <p className="text-sm text-gray-500 leading-relaxed mb-4 break-words">{s.desc}</p>
+                        <Link to="/inquiry" className="text-sm font-semibold text-gray-500 hover:text-primary hover:underline">
+                          이 스타일로 신청하기 →
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-bold text-dark mb-2 break-words">{s.title}</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed mb-4 break-words">{s.desc}</p>
-                    <Link to="/inquiry" className="text-sm font-semibold text-gray-500 hover:text-primary hover:underline">
-                      이 스타일로 신청하기 →
-                    </Link>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
