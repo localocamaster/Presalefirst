@@ -1,10 +1,11 @@
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useLocation } from 'react-router-dom';
 import { loadProjectData } from '../data/projectLoader';
 import { getProjectConfig } from '../data/projects/projectRegistry';
 import TemplateLayout from '../templates/TemplateLayout';
 import CategoryLayout from '../templates/CategoryLayout';
 import Category2Layout from '../templates/Category2Layout';
 import PremiumLayout from '../templates/PremiumLayout';
+import PremiumSubLayout from '../templates/PremiumSubLayout';
 import { categorySamples } from '../data/categorySamples';
 import { category2Samples } from '../data/category2Samples';
 import { premiumSamples } from '../data/premiumSamples';
@@ -31,16 +32,23 @@ const category2Templates = new Set(Object.keys(category2Samples));
 const premiumTemplates = new Set(Object.keys(premiumSamples));
 
 export default function Demo() {
-  const { slug, projectId: projectIdParam } = useParams();
+  const { slug, subpage, projectId: projectIdParam } = useParams();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const projectIdFromQuery = searchParams.get('project') ?? undefined;
   const projectId = projectIdParam ?? projectIdFromQuery;
+  const isComplexRoute = location.pathname.includes('/complex/');
+  const isUnitRoute = location.pathname.includes('/unit/');
 
   // Premium template check
   if (slug && premiumTemplates.has(slug)) {
     const premiumData = premiumSamples[slug];
     if (premiumData) {
-      return <PremiumLayout data={premiumData} />;
+      // Premium subpage (사업안내 등)
+      if (subpage && premiumData.subPages?.some(sp => sp.pageId === subpage)) {
+        return <PremiumSubLayout data={premiumData} slug={slug} subpageId={subpage} />;
+      }
+      return <PremiumLayout data={premiumData} slug={slug} />;
     }
   }
 
@@ -52,11 +60,11 @@ export default function Demo() {
     }
   }
 
-  // Category template check
+  // Category template check (with optional business subpage)
   if (slug && categoryTemplates.has(slug)) {
     const categoryData = categorySamples[slug];
     if (categoryData) {
-      return <CategoryLayout data={categoryData} />;
+      return <CategoryLayout data={categoryData} subpage={isComplexRoute || isUnitRoute ? undefined : subpage} complexSubpage={isComplexRoute ? subpage : undefined} unitSubpage={isUnitRoute ? subpage : undefined} />;
     }
   }
 

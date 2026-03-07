@@ -10,7 +10,10 @@ export interface Category2SubMenuItem {
 /** GNB 메인 메뉴 아이템 */
 export interface Category2NavItem {
   label: string;
-  children: Category2SubMenuItem[];
+  /** 서브메뉴 (드롭다운). pageId가 있으면 생략 가능 */
+  children?: Category2SubMenuItem[];
+  /** 직접 링크용. 설정 시 클릭 시 해당 페이지로 이동 (드롭다운 없음) */
+  pageId?: string;
 }
 
 /** 메인 슬라이드 */
@@ -46,6 +49,8 @@ export interface OverviewSubPage extends SubPageBase {
   type: 'overview';
   infoTable: ProjectInfoRow[];
   mainImage?: string;
+  /** 추가 이미지 (테이블 위에 표시) */
+  images?: string[];
   description?: string;
 }
 
@@ -95,6 +100,21 @@ export type Category2SubPage =
   | DirectionsSubPage
   | ReservationSubPage;
 
+/** 메인 페이지 섹션 (이미지/슬라이더/배너) */
+export interface Category2MainSection {
+  id: string;
+  title: string;
+  subtitle?: string;
+  /** 단일 이미지 (type = 'image') */
+  image?: string;
+  /** 여러 이미지 (type = 'slider' | 'banner') */
+  images?: string[];
+  /** 섹션 타입: image(기본), slider, banner */
+  sectionType?: 'image' | 'slider' | 'banner';
+  /** 클릭 시 이동할 서브 페이지 pageId */
+  linkTo?: string;
+}
+
 /** 카테고리형 2번째 템플릿 전체 데이터 */
 export interface Category2TemplateData {
   id: string;
@@ -109,15 +129,21 @@ export interface Category2TemplateData {
   /** 메인 페이지 슬라이더 */
   mainSlides: Category2Slide[];
 
-  /** 메인 페이지 섹션 이미지들 (브랜드소개, 입지, 프리미엄, 단지, 조경 등 미리보기) */
-  mainSections: {
-    id: string;
+  /** 메인 페이지 섹션들 */
+  mainSections: Category2MainSection[];
+
+  /** 메인 페이지 현장안내 섹션 (선택) */
+  mainLocation?: {
     title: string;
-    subtitle?: string;
-    image: string;
-    /** 클릭 시 이동할 서브 페이지 pageId */
-    linkTo?: string;
-  }[];
+    projectName: string;
+    address: string;
+    phone: string;
+    mapImage: string;
+    cautions: string[];
+  };
+
+  /** 메인 페이지 방문예약 배경 이미지 (선택) */
+  customerBgImage?: string;
 
   /** 모든 서브 페이지 데이터 */
   subPages: Category2SubPage[];

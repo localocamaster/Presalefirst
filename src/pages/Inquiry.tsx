@@ -1,5 +1,4 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
 import { Phone, Mail, Clock, Send, CheckCircle2 } from 'lucide-react';
 import { submitInquiry } from '../api/inquiry';
 import SeoHead from '../components/SeoHead';
@@ -176,7 +175,7 @@ export default function Inquiry() {
                         className="mt-1 w-4.5 h-4.5 text-primary border-gray-300 rounded focus:ring-primary"
                       />
                       <span className="text-xs sm:text-sm text-gray-600 break-words">
-                        <Link to="/terms" target="_blank" className="underline hover:text-primary">이용약관</Link> 및 <Link to="/privacy" target="_blank" className="underline hover:text-primary">개인정보처리방침</Link>에 동의합니다. <span className="text-red-500">[필수]</span>
+                        <span className="underline">이용약관</span> 및 <span className="underline">개인정보처리방침</span>에 동의합니다. <span className="text-red-500">[필수]</span>
                       </span>
                     </label>
                     <div className="flex flex-col sm:flex-row gap-3 pt-2">

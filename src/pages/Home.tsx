@@ -54,8 +54,9 @@ const solutions = [
 
 const samples = [
   { title: '천안 두산위브더제니스 모델하우스', type: '모던형', desc: '현대적이고 세련된 UI로 분양 정보를 효과적으로 전달하는 홈페이지', slug: 'zenith', thumb: '/images/demo/zenith/slide1.png' },
-  { title: '화성우방아이유쉘', type: '카테고리형', desc: '탭, 캐러셀, 체크리스트 등 다양한 UI로 구성된 인터랙티브 분양 홈페이지', slug: 'woobangiushell', thumb: '/images/demo/zenith/slide1.png' },
-  { title: '프리미엘', type: '프리미엄형', desc: '골드 악센트의 다크 테마, 풀스크린 히어로 슬라이더와 프리미엄 섹션 구성의 고급 분양 홈페이지', slug: 'premium-priel', thumb: '/images/demo/premium/main-cg.webp' },
+  { title: '화성우방아이유쉘', type: '카테고리형', desc: '탭, 캐러셀, 체크리스트 등 다양한 UI로 구성된 인터랙티브 분양 홈페이지', slug: 'woobangiushell', thumb: '/images/demo/woobangiushell/1765442639_1.슬라이드메인1.webp' },
+  { title: '프레쉬하우스', type: '프리미엄형', desc: '풀스크린 섹션 전환과 골드 악센트 다크 테마, 커뮤니티·럭셔리·라이프 섹션 구성의 풀페이지형 분양 홈페이지', slug: 'premium-freshhouse', thumb: '/images/demo/freshhouse/hero2.webp' },
+  { title: '아우름 레지던스 잠실', type: '프리미엄형', desc: '잠실유일의 시니어 레지던스, 골드 악센트 다크 테마, 프레스티지 서비스와 스마트 인테리어 구성의 프리미엄 분양 홈페이지', slug: 'premium-aurum', thumb: '/images/demo/aurum/0421b530aaa61.png' },
 ];
 
 const steps = [
@@ -566,7 +567,7 @@ export default function Home() {
                         className="mt-1 w-4.5 h-4.5 text-primary border-gray-300 rounded focus:ring-primary"
                       />
                       <span className="text-xs sm:text-sm text-gray-600 break-words">
-                        <Link to="/terms" target="_blank" className="underline hover:text-primary">이용약관</Link> 및 <Link to="/privacy" target="_blank" className="underline hover:text-primary">개인정보처리방침</Link>에 동의합니다. <span className="text-red-500">[필수]</span>
+                        <span className="underline">이용약관</span> 및 <span className="underline">개인정보처리방침</span>에 동의합니다. <span className="text-red-500">[필수]</span>
                       </span>
                     </label>
                     <div className="flex flex-col sm:flex-row gap-3 pt-2">

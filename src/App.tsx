@@ -29,7 +29,11 @@ function Layout() {
             <Route path="/service" element={<Service />} />
             <Route path="/process" element={<Process />} />
             <Route path="/samples" element={<Samples />} />
+            <Route path="/demo/:slug/:subpage" element={<Demo />} />
             <Route path="/demo/:slug" element={<Demo />} />
+            <Route path="/demo/:slug/business/:subpage" element={<Demo />} />
+            <Route path="/demo/:slug/complex/:subpage" element={<Demo />} />
+            <Route path="/demo/:slug/unit/:subpage" element={<Demo />} />
             <Route path="/p/:projectId" element={<Demo />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/blog" element={<Blog />} />

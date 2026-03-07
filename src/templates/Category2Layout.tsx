@@ -8,6 +8,7 @@ import {
 import type {
   Category2TemplateData,
   Category2SubPage,
+  Category2MainSection,
   OverviewSubPage,
   ImageSubPage,
   LocationSubPage,
@@ -29,7 +30,7 @@ interface Props {
 export default function Category2Layout({ data }: Props) {
   const [currentPage, setCurrentPage] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openGnb, setOpenGnb] = useState<string | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [slideIdx, setSlideIdx] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -53,10 +54,12 @@ export default function Category2Layout({ data }: Props) {
     ? data.subPages.find(p => p.pageId === currentPage)
     : null;
 
-  // Find which nav group the current page belongs to
+  // Find which nav group the current page belongs to (드롭다운 메뉴만)
   const currentNavGroup = currentPage
-    ? data.navItems.find(nav => nav.children.some(c => c.pageId === currentPage))
+    ? data.navItems.find(nav => nav.children?.some(c => c.pageId === currentPage))
     : null;
+
+  const hasDirectReservation = data.navItems.some(nav => nav.pageId === 'reservation');
 
   useEffect(() => {
     const onScroll = () => {
@@ -85,19 +88,19 @@ export default function Category2Layout({ data }: Props) {
     if (pageId === 'reservation') {
       setShowModal(true);
       setMobileOpen(false);
-      setOpenGnb(null);
+      setOpenDropdown(null);
       return;
     }
     setCurrentPage(pageId);
     setMobileOpen(false);
-    setOpenGnb(null);
+    setOpenDropdown(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const goHome = useCallback(() => {
     setCurrentPage(null);
     setMobileOpen(false);
-    setOpenGnb(null);
+    setOpenDropdown(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -123,6 +126,15 @@ export default function Category2Layout({ data }: Props) {
       {page.description && (
         <p className="text-sm text-gray-600 leading-relaxed mb-8">{page.description}</p>
       )}
+      {page.images && page.images.length > 0 && (
+        <div className="space-y-6 mb-8">
+          {page.images.map((src, i) => (
+            <div key={i} className="rounded-xl overflow-hidden shadow-md">
+              <img src={src} alt={page.title} className="w-full object-contain" loading="lazy" />
+            </div>
+          ))}
+        </div>
+      )}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <tbody>
@@ -142,7 +154,7 @@ export default function Category2Layout({ data }: Props) {
       </div>
       {page.mainImage && (
         <div className="mt-8 rounded-xl overflow-hidden shadow-md">
-          <img src={page.mainImage} alt={page.title} className="w-full object-cover" loading="lazy" />
+          <img src={page.mainImage} alt={page.title} className="w-full object-contain" loading="lazy" />
         </div>
       )}
     </div>
@@ -157,7 +169,7 @@ export default function Category2Layout({ data }: Props) {
         {page.images.map((img, i) => (
           <div key={i}>
             <div className="rounded-xl overflow-hidden shadow-md">
-              <img src={img.src} alt={img.alt} className="w-full object-cover" loading="lazy" />
+              <img src={img.src} alt={img.alt} className="w-full object-contain" loading="lazy" />
             </div>
             {img.caption && (
               <p className="mt-2 text-xs text-gray-500 text-center">{img.caption}</p>
@@ -174,7 +186,7 @@ export default function Category2Layout({ data }: Props) {
         <p className="text-sm text-gray-600 leading-relaxed mb-8">{page.description}</p>
       )}
       <div className="rounded-xl overflow-hidden shadow-md mb-8">
-        <img src={page.mainImage} alt={page.title} className="w-full object-cover" loading="lazy" />
+        <img src={page.mainImage} alt={page.title} className="w-full object-contain" loading="lazy" />
       </div>
       <div className="grid md:grid-cols-2 gap-4">
         {page.poiGroups.map((group, i) => (
@@ -241,7 +253,7 @@ export default function Category2Layout({ data }: Props) {
     <div>
       {page.mapImage && (
         <div className="rounded-xl overflow-hidden shadow-md mb-8">
-          <img src={page.mapImage} alt="오시는길" className="w-full object-cover" loading="lazy" />
+          <img src={page.mapImage} alt="오시는길" className="w-full object-contain" loading="lazy" />
         </div>
       )}
       <div className="space-y-4">
@@ -298,8 +310,7 @@ export default function Category2Layout({ data }: Props) {
           <label className="flex items-start gap-2 cursor-pointer">
             <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 rounded" />
             <span className="text-sm text-gray-600">
-              <Link to="/terms" target="_blank" className="underline">이용약관</Link> 및{' '}
-              <Link to="/privacy" target="_blank" className="underline">개인정보처리방침</Link>에 동의합니다 *
+              <span className="underline">이용약관</span> 및 <span className="underline">개인정보처리방침</span>에 동의합니다 *
             </span>
           </label>
           <button type="submit" disabled={!agreed}
@@ -323,6 +334,125 @@ export default function Category2Layout({ data }: Props) {
     }
   };
 
+  // ─── Main Section Renderers ───
+
+  const [sliderIndices, setSliderIndices] = useState<Record<string, number>>({});
+
+  const renderImageSection = (section: Category2MainSection) => (
+    <section key={section.id} className="py-14 md:py-20 bg-white">
+      <div className="max-w-5xl mx-auto px-4">
+        {section.title && (
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900">{section.title}</h2>
+            {section.subtitle && (
+              <p className="mt-2 text-sm text-gray-500">{section.subtitle}</p>
+            )}
+          </div>
+        )}
+        {section.linkTo ? (
+          <button onClick={() => navigateTo(section.linkTo!)} className="block w-full">
+            <img
+              src={section.image}
+              alt={section.title}
+              className="w-full rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer"
+              loading="lazy"
+            />
+          </button>
+        ) : (
+          <img
+            src={section.image}
+            alt={section.title}
+            className="w-full rounded-lg shadow-md"
+            loading="lazy"
+          />
+        )}
+      </div>
+    </section>
+  );
+
+  const renderSliderSection = (section: Category2MainSection) => {
+    const imgs = section.images || [];
+    const idx = sliderIndices[section.id] || 0;
+    return (
+      <section key={section.id} className="py-14 md:py-20 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4">
+          {section.title && (
+            <div className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-black text-gray-900">{section.title}</h2>
+              {section.subtitle && (
+                <p className="mt-2 text-sm text-gray-500">{section.subtitle}</p>
+              )}
+            </div>
+          )}
+          <div className="relative">
+            <div className="overflow-hidden rounded-lg shadow-md">
+              <div
+                className="flex transition-transform duration-500"
+                style={{ transform: `translateX(-${idx * 100}%)` }}
+              >
+                {imgs.map((img, i) => (
+                  <img
+                    key={i}
+                    src={img}
+                    alt={`${section.title} ${i + 1}`}
+                    className="w-full flex-shrink-0 object-cover"
+                    loading="lazy"
+                  />
+                ))}
+              </div>
+            </div>
+            {imgs.length > 1 && (
+              <div className="flex items-center justify-center gap-4 mt-4">
+                <button
+                  onClick={() => setSliderIndices(prev => ({ ...prev, [section.id]: (idx - 1 + imgs.length) % imgs.length }))}
+                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5 text-gray-600" />
+                </button>
+                <span className="text-sm text-gray-500 font-medium">
+                  {String(idx + 1).padStart(2, '0')} / {String(imgs.length).padStart(2, '0')}
+                </span>
+                <button
+                  onClick={() => setSliderIndices(prev => ({ ...prev, [section.id]: (idx + 1) % imgs.length }))}
+                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5 text-gray-600" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    );
+  };
+
+  const [bannerIdx, setBannerIdx] = useState(0);
+
+  useEffect(() => {
+    const bannerSection = data.mainSections.find(s => s.sectionType === 'banner');
+    if (!bannerSection?.images || bannerSection.images.length <= 1 || currentPage) return;
+    const timer = setInterval(() => {
+      setBannerIdx(i => (i + 1) % (bannerSection.images!.length));
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [currentPage, data.mainSections]);
+
+  const renderBannerSection = (section: Category2MainSection) => {
+    const imgs = section.images || [];
+    return (
+      <section key={section.id} className="relative overflow-hidden" style={{ height: 'auto' }}>
+        {imgs.map((img, i) => (
+          <div
+            key={i}
+            className={`transition-opacity duration-700 ${i === bannerIdx ? 'relative opacity-100' : 'absolute inset-0 opacity-0'}`}
+          >
+            <img src={img} alt={`배너 ${i + 1}`} className="w-full object-cover" loading="lazy" />
+          </div>
+        ))}
+      </section>
+    );
+  };
+
   // ─── Main Render ───
 
   return (
@@ -331,15 +461,15 @@ export default function Category2Layout({ data }: Props) {
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
-          background: scrolled ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,1)',
-          boxShadow: scrolled ? '0 2px 12px rgba(0,0,0,0.1)' : '0 1px 4px rgba(0,0,0,0.06)',
+          background: scrolled || openDropdown ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,1)',
+          boxShadow: scrolled || openDropdown ? '0 2px 12px rgba(0,0,0,0.1)' : '0 1px 4px rgba(0,0,0,0.06)',
         }}
       >
         <div className="flex items-center justify-between h-14 md:h-16 px-3 md:px-6 max-w-7xl mx-auto">
           {/* Logo */}
           <button onClick={goHome} className="flex flex-col items-start min-w-0">
             {data.projectNameEn && (
-              <span className="text-[10px] md:text-xs font-bold tracking-widest text-gray-400 uppercase">
+              <span className="text-[11px] md:text-xs font-bold tracking-widest text-gray-400 uppercase">
                 {data.projectNameEn}
               </span>
             )}
@@ -348,33 +478,44 @@ export default function Category2Layout({ data }: Props) {
             </span>
           </button>
 
-          {/* Desktop GNB */}
+          {/* Desktop GNB - 개별 드롭다운 */}
           <nav className="hidden md:flex items-center gap-0.5">
             {data.navItems.map((item) => (
               <div
                 key={item.label}
                 className="relative"
-                onMouseEnter={() => setOpenGnb(item.label)}
-                onMouseLeave={() => setOpenGnb(null)}
+                onMouseEnter={() => item.children && setOpenDropdown(item.label)}
+                onMouseLeave={() => setOpenDropdown(null)}
               >
-                <button
-                  className="px-3 xl:px-4 py-2 text-[13px] xl:text-[14px] font-bold text-gray-700 hover:transition-colors flex items-center gap-1"
-                  onMouseEnter={(e) => (e.currentTarget.style.color = tc)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = '')}
-                  onClick={() => {
-                    if (item.children.length > 0) navigateTo(item.children[0].pageId);
-                  }}
-                >
-                  {item.label}
-                  <ChevronDown className="w-3 h-3" />
-                </button>
-                {openGnb === item.label && (
+                {item.pageId ? (
+                  <button
+                    onClick={() => navigateTo(item.pageId!)}
+                    className="px-3 xl:px-4 py-2 text-[13px] xl:text-[14px] font-bold text-gray-700 hover:transition-colors flex items-center gap-1"
+                    onMouseEnter={(e) => (e.currentTarget.style.color = tc)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '')}
+                  >
+                    {item.label}
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      if (item.children && item.children.length > 0) navigateTo(item.children![0].pageId);
+                    }}
+                    className="px-3 xl:px-4 py-2 text-[13px] xl:text-[14px] font-bold text-gray-700 hover:transition-colors flex items-center gap-1"
+                    onMouseEnter={(e) => (e.currentTarget.style.color = tc)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '')}
+                  >
+                    {item.label}
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                )}
+                {item.children && openDropdown === item.label && (
                   <div className="absolute top-full left-0 bg-white border border-gray-100 rounded-lg shadow-xl min-w-[160px] py-1 z-50">
                     {item.children.map((child) => (
                       <button
                         key={child.pageId}
-                        onClick={() => navigateTo(child.pageId)}
-                        className="block w-full text-left px-4 py-2.5 text-[13px] text-gray-600 hover:bg-gray-50 hover:font-semibold"
+                        onClick={() => navigateTo(child.pageId!)}
+                        className="block w-full text-left px-4 py-2.5 text-[13px] text-gray-600 hover:text-gray-900 hover:font-semibold hover:bg-gray-50 transition-colors"
                       >
                         {child.label}
                       </button>
@@ -383,17 +524,25 @@ export default function Category2Layout({ data }: Props) {
                 )}
               </div>
             ))}
-            <button
-              onClick={() => setShowModal(true)}
-              className="ml-3 px-5 py-2 rounded-lg text-[13px] font-extrabold text-white flex items-center gap-1.5 transition-colors"
+            {!hasDirectReservation && (
+              <button
+                onClick={() => setShowModal(true)}
+                className="ml-2 px-4 py-2 rounded-lg text-[13px] xl:text-[14px] font-extrabold text-gray-700 hover:bg-gray-100 flex items-center gap-1.5 transition-colors"
+              >
+                방문예약 신청
+              </button>
+            )}
+            <a
+              href={`tel:${data.contactPhone}`}
+              className="ml-2 px-5 py-2 rounded-lg text-sm font-extrabold text-white flex items-center gap-1.5 transition-colors"
               style={{ background: tc }}
             >
-              <Phone className="w-3.5 h-3.5" /> {data.contactPhone}
-            </button>
+              <Phone className="w-4 h-4" /> {data.contactPhone}
+            </a>
           </nav>
 
           {/* Mobile Toggle */}
-          <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="md:hidden p-2.5" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -402,34 +551,47 @@ export default function Category2Layout({ data }: Props) {
         {mobileOpen && (
           <div className="md:hidden bg-white border-t border-gray-100 max-h-[70vh] overflow-y-auto">
             <div
-              className="text-center py-2.5 text-xs font-bold text-white flex items-center justify-center gap-1.5"
+              className="text-center py-3 text-sm font-bold text-white flex items-center justify-center gap-1.5"
               style={{ background: tc }}
             >
-              <Phone className="w-3.5 h-3.5" /> {data.contactPhone}
+              <Phone className="w-4 h-4" /> {data.contactPhone}
             </div>
-            {data.navItems.map((item) => (
-              <div key={item.label}>
-                <div className="px-5 py-3 text-[13px] font-bold text-gray-800 border-b border-gray-100 bg-gray-50">
+            {data.navItems.map((item) =>
+              item.pageId ? (
+                <button
+                  key={item.label}
+                  onClick={() => { navigateTo(item.pageId!); setMobileOpen(false); }}
+                  className="block w-full text-left px-5 py-3.5 text-[15px] font-bold border-b border-gray-100"
+                  style={{ color: tc }}
+                >
                   {item.label}
+                </button>
+              ) : (
+                <div key={item.label}>
+                  <div className="px-5 py-3.5 text-[15px] font-bold text-gray-800 border-b border-gray-100 bg-gray-50">
+                    {item.label}
+                  </div>
+                  {item.children?.map((child) => (
+                    <button
+                      key={child.pageId}
+                      onClick={() => navigateTo(child.pageId)}
+                      className="block w-full text-left px-8 py-3 text-[14px] text-gray-600 border-b border-gray-50 hover:bg-gray-50"
+                    >
+                      {child.label}
+                    </button>
+                  ))}
                 </div>
-                {item.children.map((child) => (
-                  <button
-                    key={child.pageId}
-                    onClick={() => navigateTo(child.pageId)}
-                    className="block w-full text-left px-8 py-2.5 text-[12px] text-gray-600 border-b border-gray-50 hover:bg-gray-50"
-                  >
-                    {child.label}
-                  </button>
-                ))}
-              </div>
-            ))}
-            <button
-              onClick={() => { setShowModal(true); setMobileOpen(false); }}
-              className="block w-full text-left px-5 py-3 text-[13px] font-bold border-b border-gray-100"
-              style={{ color: tc }}
-            >
-              방문예약신청
-            </button>
+              )
+            )}
+            {!hasDirectReservation && (
+              <button
+                onClick={() => { setShowModal(true); setMobileOpen(false); }}
+                className="block w-full text-left px-5 py-3.5 text-[15px] font-bold border-b border-gray-100"
+                style={{ color: tc }}
+              >
+                방문예약신청
+              </button>
+            )}
           </div>
         )}
       </header>
@@ -440,7 +602,7 @@ export default function Category2Layout({ data }: Props) {
         <>
           {/* Sub Visual */}
           <div
-            className="relative pt-14 md:pt-16 h-48 md:h-64 flex items-center justify-center overflow-hidden"
+            className="relative pt-16 h-48 md:h-64 flex items-center justify-center overflow-hidden"
           >
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -460,7 +622,7 @@ export default function Category2Layout({ data }: Props) {
             <div className="flex gap-8 md:gap-12">
               {/* SNB - Desktop */}
               <div ref={snbRef} className="hidden lg:block w-56 flex-shrink-0">
-                <div className={`${stickySnb ? 'fixed top-20 w-56' : ''}`}>
+                <div className={`${stickySnb ? 'fixed top-16 w-56' : ''}`}>
                   <h3
                     className="text-base font-black text-white px-5 py-3 rounded-t-xl"
                     style={{ background: tc }}
@@ -468,7 +630,7 @@ export default function Category2Layout({ data }: Props) {
                     {currentNavGroup?.label}
                   </h3>
                   <div className="border border-gray-200 rounded-b-xl overflow-hidden">
-                    {currentNavGroup?.children.map((child) => (
+                    {(currentNavGroup?.children ?? []).map((child) => (
                       <button
                         key={child.pageId}
                         onClick={() => navigateTo(child.pageId)}
@@ -489,7 +651,7 @@ export default function Category2Layout({ data }: Props) {
               {/* Mobile SNB (horizontal scroll) */}
               <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg">
                 <div className="flex overflow-x-auto">
-                  {currentNavGroup?.children.map((child) => (
+                  {(currentNavGroup?.children ?? []).map((child) => (
                     <button
                       key={child.pageId}
                       onClick={() => navigateTo(child.pageId)}
@@ -522,7 +684,7 @@ export default function Category2Layout({ data }: Props) {
         /* ── Main Page ── */
         <>
           {/* Hero Slider */}
-          <section className="relative pt-14 md:pt-16 min-h-[60vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden">
+          <section className="relative pt-16 min-h-[60vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden">
             {data.mainSlides.map((slide, i) => (
               <div
                 key={i}
@@ -535,24 +697,18 @@ export default function Category2Layout({ data }: Props) {
               </div>
             ))}
             <div className="relative z-10 text-center px-4">
+              {data.mainSlides[slideIdx]?.subtitle && (
+                <p className="text-sm md:text-base tracking-widest font-bold text-white/90 mb-4 drop-shadow uppercase">
+                  {data.mainSlides[slideIdx].subtitle}
+                </p>
+              )}
               {data.mainSlides[slideIdx]?.title.map((line, i) => (
                 <h1 key={i} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight md:leading-snug drop-shadow-lg">
                   {line}
                 </h1>
               ))}
-              {data.mainSlides[slideIdx]?.subtitle && (
-                <p className="mt-4 md:mt-6 text-base md:text-xl text-white/90 font-medium drop-shadow">
-                  {data.mainSlides[slideIdx].subtitle}
-                </p>
-              )}
-              <button
-                onClick={() => setShowModal(true)}
-                className="mt-6 md:mt-8 px-8 py-3.5 rounded-full text-sm md:text-base font-bold text-white border-2 border-white/60 hover:bg-white/20 transition-colors"
-              >
-                방문예약 신청
-              </button>
             </div>
-            {/* Slide controls */}
+            {/* Slide indicator */}
             {data.mainSlides.length > 1 && (
               <>
                 <button
@@ -567,66 +723,84 @@ export default function Category2Layout({ data }: Props) {
                 >
                   <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white" />
                 </button>
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
-                  {data.mainSlides.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setSlideIdx(i)}
-                      className={`w-2.5 h-2.5 rounded-full transition-all ${
-                        i === slideIdx ? 'bg-white scale-125' : 'bg-white/40'
-                      }`}
-                    />
-                  ))}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
+                  <span className="text-sm font-bold text-white">{String(slideIdx + 1).padStart(2, '0')}</span>
+                  <div className="w-12 h-0.5 bg-white/30 rounded overflow-hidden">
+                    <div className="h-full bg-white transition-all duration-500" style={{ width: `${((slideIdx + 1) / data.mainSlides.length) * 100}%` }} />
+                  </div>
+                  <span className="text-sm text-white/60">{String(data.mainSlides.length).padStart(2, '0')}</span>
                 </div>
               </>
             )}
           </section>
 
-          {/* Main Sections Preview */}
-          {data.mainSections.map((section, i) => (
-            <section
-              key={section.id}
-              className={`py-16 md:py-24 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-            >
+          {/* Main Sections */}
+          {data.mainSections.map((section) => {
+            const st = section.sectionType || 'image';
+            if (st === 'banner') return renderBannerSection(section);
+            if (st === 'slider') return renderSliderSection(section);
+            return renderImageSection(section);
+          })}
+
+          {/* Location Section */}
+          {data.mainLocation && (
+            <section key="main-loc" className="py-16 md:py-20 bg-white">
               <div className="max-w-6xl mx-auto px-4">
-                <div className={`grid md:grid-cols-2 gap-8 md:gap-12 items-center ${i % 2 === 1 ? 'md:[direction:rtl] md:*:[direction:ltr]' : ''}`}>
-                  <div className="rounded-2xl overflow-hidden shadow-lg">
-                    <img src={section.image} alt={section.title} className="w-full h-64 md:h-80 object-cover" loading="lazy" />
-                  </div>
+                <div className="text-center mb-10">
+                  <h2 className="text-2xl md:text-3xl font-black text-gray-900">{data.mainLocation.title}</h2>
+                </div>
+                <div className="grid md:grid-cols-2 gap-8 items-start">
                   <div>
-                    <span className="text-xs font-bold tracking-widest uppercase" style={{ color: tc }}>
-                      {data.projectName}
-                    </span>
-                    <h2 className="mt-3 text-2xl md:text-3xl font-black text-gray-900 leading-snug">
-                      {section.title}
-                    </h2>
-                    {section.subtitle && (
-                      <p className="mt-3 text-sm text-gray-500 leading-relaxed">{section.subtitle}</p>
-                    )}
-                    {section.linkTo && (
-                      <button
-                        onClick={() => navigateTo(section.linkTo!)}
-                        className="mt-6 px-6 py-2.5 rounded-lg text-sm font-bold text-white transition-colors"
-                        style={{ background: tc }}
-                      >
-                        자세히 보기
-                      </button>
-                    )}
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">{data.mainLocation.projectName}</h3>
+                    <ul className="space-y-1 mb-6">
+                      <li className="flex items-start gap-2 text-sm text-gray-600">
+                        <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: tc }} />
+                        현장 : {data.mainLocation.address}
+                      </li>
+                    </ul>
+                    <div className="flex items-center gap-2 mb-8">
+                      <span className="text-sm text-gray-500">분양문의</span>
+                      <a href={`tel:${data.mainLocation.phone}`} className="text-xl font-black" style={{ color: tc }}>
+                        {data.mainLocation.phone}
+                      </a>
+                    </div>
+                    <ul className="space-y-1.5 border-t border-gray-200 pt-4">
+                      {data.mainLocation.cautions.map((c, i) => (
+                        <li key={i} className="text-[11px] text-gray-400 leading-relaxed">※ {c}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-xl overflow-hidden shadow-md">
+                    <img src={data.mainLocation.mapImage} alt="오시는길" className="w-full object-contain" loading="lazy" />
                   </div>
                 </div>
               </div>
             </section>
-          ))}
+          )}
 
           {/* Inline Reservation */}
-          <section className="py-16 md:py-24 bg-white">
-            <div className="max-w-xl mx-auto px-4">
-              <div className="text-center mb-8">
-                <span className="text-xs font-bold tracking-widest uppercase" style={{ color: tc }}>RESERVATION</span>
-                <h2 className="mt-2 text-2xl md:text-3xl font-black text-gray-900">방문예약 신청</h2>
-                <p className="mt-2 text-sm text-gray-500">아래 정보를 입력하시면 빠르게 상담을 도와드립니다.</p>
+          <section
+            className="relative py-16 md:py-24"
+            style={data.customerBgImage ? undefined : { background: '#fff' }}
+          >
+            {data.customerBgImage && (
+              <>
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${data.customerBgImage})` }} />
+                <div className="absolute inset-0 bg-black/50" />
+              </>
+            )}
+            <div className="relative z-10 max-w-5xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
+              <div className="text-center md:text-left">
+                <h2 className={`text-2xl md:text-3xl font-black ${data.customerBgImage ? 'text-white' : 'text-gray-900'}`}>
+                  방문예약신청
+                </h2>
+                <p className={`mt-2 text-sm ${data.customerBgImage ? 'text-white/80' : 'text-gray-500'}`}>
+                  방문예약신청을 하시면 분양정보를 발빠르게 받아보실 수 있습니다.
+                </p>
               </div>
-              {renderReservationForm()}
+              <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                {renderReservationForm()}
+              </div>
             </div>
           </section>
         </>
@@ -635,34 +809,20 @@ export default function Category2Layout({ data }: Props) {
       {/* ── Footer ── */}
       <footer className="bg-gray-900 text-gray-400 py-10 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
+          <div className="flex flex-col md:flex-row justify-between items-stretch md:items-start gap-8 mb-8">
+            <div className="text-left">
               <p className="font-bold text-white text-sm mb-3">{data.theme.footerText}</p>
               {data.theme.footerInfo.developer && <p className="text-xs mb-1">시행 | {data.theme.footerInfo.developer}</p>}
               {data.theme.footerInfo.constructor && <p className="text-xs mb-1">시공 | {data.theme.footerInfo.constructor}</p>}
               {data.theme.footerInfo.trustee && <p className="text-xs mb-1">신탁 | {data.theme.footerInfo.trustee}</p>}
               {data.theme.footerInfo.sales && <p className="text-xs mb-1">분양대행 | {data.theme.footerInfo.sales}</p>}
             </div>
-            <div>
+            <div className="text-left md:text-right">
               <p className="font-bold text-white text-sm mb-3">연락처</p>
               <p className="text-xs mb-1">대표번호: {data.contactPhone}</p>
               {data.theme.footerInfo.bizNumber && <p className="text-xs">사업자등록번호: {data.theme.footerInfo.bizNumber}</p>}
             </div>
-            <div>
-              <p className="font-bold text-white text-sm mb-3">링크</p>
-              <div className="flex gap-4 text-xs">
-                <Link to="/privacy" className="hover:text-white underline">개인정보처리방침</Link>
-                <Link to="/terms" className="hover:text-white underline">이용약관</Link>
-              </div>
-            </div>
           </div>
-          {data.theme.disclaimers && data.theme.disclaimers.length > 0 && (
-            <div className="border-t border-gray-800 pt-6 mb-4 space-y-1">
-              {data.theme.disclaimers.map((d, i) => (
-                <p key={i} className="text-[10px] text-gray-500 leading-relaxed">※ {d}</p>
-              ))}
-            </div>
-          )}
           <p className="text-[11px] text-gray-600 text-center border-t border-gray-800 pt-4">
             본 페이지는 분양퍼스트에서 제작한 데모 템플릿입니다.{' '}
             <Link to="/" className="underline hover:text-gray-400">분양퍼스트</Link>
@@ -738,8 +898,7 @@ export default function Category2Layout({ data }: Props) {
                   <label className="flex items-start gap-2 cursor-pointer">
                     <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 rounded" />
                     <span className="text-sm text-gray-600">
-                      <Link to="/terms" target="_blank" className="underline">이용약관</Link> 및{' '}
-                      <Link to="/privacy" target="_blank" className="underline">개인정보처리방침</Link>에 동의합니다 *
+                      <span className="underline">이용약관</span> 및 <span className="underline">개인정보처리방침</span>에 동의합니다 *
                     </span>
                   </label>
                   <button type="submit" disabled={!agreed}

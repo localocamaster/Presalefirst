@@ -12,22 +12,24 @@ const samples = [
   // 모던형
   { slug: 'zenith', title: '천안 두산위브더제니스 모델하우스', type: '모던형', desc: '현대적이고 세련된 UI로 분양 정보를 효과적으로 전달하는 홈페이지', thumb: '/images/demo/zenith/slide1.png' },
   { slug: 'ssy', title: '서면 쌍용 더 플래티넘', type: '모던형', desc: '깔끔한 화이트 톤과 블루 포인트로 신뢰감을 주는 모던한 분양 홈페이지', thumb: '/images/demo/ssy/slide1.png' },
-  { slug: 'hangang', title: '한강 아이파크 시티', type: '모던형', desc: '그린 포인트 컬러와 깔끔한 레이아웃의 모던 분양 홈페이지', thumb: '/images/demo/zenith/slide5.png' },
+  { slug: 'dalseo', title: '달서 푸르지오 시그니처', type: '모던형', desc: '그린 포인트 컬러와 깔끔한 레이아웃의 모던 분양 홈페이지', thumb: '/images/demo/dalseo/slide1.png' },
 
   // 카테고리형
-  { slug: 'woobangiushell', title: '화성우방아이유쉘', type: '카테고리형', desc: '탭, 캐러셀, 체크리스트 등 다양한 UI로 구성된 인터랙티브 분양 홈페이지', thumb: '/images/demo/zenith/slide1.png' },
-  { slug: 'gunsan-vivaldi', title: '군산 한라비발디 더프라임', type: '카테고리형', desc: '서브페이지 + 좌측 SNB 구조의 카테고리형 분양 홈페이지. 사업안내, 단지안내, 세대안내(평면도) 별도 페이지 제공', thumb: '/images/demo/zenith/slide1.png' },
+  { slug: 'woobangiushell', title: '화성우방아이유쉘', type: '카테고리형', desc: '탭, 캐러셀, 체크리스트 등 다양한 UI로 구성된 인터랙티브 분양 홈페이지', thumb: '/images/demo/woobangiushell/1765442639_1.슬라이드메인1.webp' },
+  { slug: 'gunsan-vivaldi', title: '군산 한라비발디 더프라임', type: '카테고리형', desc: '서브페이지 + 좌측 SNB 구조의 카테고리형 분양 홈페이지. 사업안내, 단지안내, 세대안내(평면도) 별도 페이지 제공', thumb: '/images/demo/gunsan-vivaldi/main-slide1.webp' },
+  { slug: 'believe-dable', title: '빌리브 디 에이블', type: '카테고리형', desc: '갤러리 로비, 층별 라운지 등 프리미엄 시설 슬라이더와 세대평면(오피스텔/도시형생활주택/펜트하우스) 구성', thumb: '/images/demo/believe-dable/main-slide1.webp' },
 
   // 프리미엄형
-  { slug: 'premium-priel', title: '프리미엘', type: '프리미엄형', desc: '골드 악센트의 다크 테마, 풀스크린 히어로 슬라이더와 프리미엄 섹션 구성의 고급 분양 홈페이지', thumb: '/images/demo/premium/main-cg.webp' },
-  { slug: 'premium-oceancity', title: '오션시티', type: '프리미엄형', desc: '블루 악센트의 다크 테마, 해운대 오션뷰 초고층 레지던스 프리미엄 분양 홈페이지', thumb: '/images/demo/premium/premium-nature.webp' },
+  // { slug: 'premium-priel', title: '프리미엘', type: '프리미엄형', desc: '골드 악센트의 다크 테마, 풀스크린 히어로 슬라이더와 프리미엄 섹션 구성의 고급 분양 홈페이지', thumb: '/images/demo/premium/main-cg.webp' },
+  // { slug: 'premium-oceancity', title: '오션시티', type: '프리미엄형', desc: '블루 악센트의 다크 테마, 해운대 오션뷰 초고층 레지던스 프리미엄 분양 홈페이지', thumb: '/images/demo/premium/premium-nature.webp' },
+  { slug: 'premium-freshhouse', title: '프레쉬하우스', type: '프리미엄형', desc: '풀스크린 섹션 전환과 골드 악센트 다크 테마, 커뮤니티·럭셔리·라이프 섹션 구성의 풀페이지형 분양 홈페이지', thumb: '/images/demo/freshhouse/hero2.webp' },
+  { slug: 'premium-parkview', title: '상상 파크 뷰 ParkVIEW', type: '프리미엄형', desc: '한강뷰 프리미엄, 오렌지 악센트 다크 테마, 풀스크린 히어로와 프리미엄 섹션 구성의 고급 분양 홈페이지', thumb: '/images/demo/parkview/main-bg.png' },
+  { slug: 'premium-aurum', title: '아우름 레지던스 잠실', type: '프리미엄형', desc: '잠실유일의 시니어 레지던스, 골드 악센트 다크 테마, 프레스티지 서비스와 스마트 인테리어 구성의 프리미엄 분양 홈페이지', thumb: '/images/demo/aurum/0421b530aaa61.png' },
 ];
 
 export default function Samples() {
   const [previewSlug, setPreviewSlug] = useState<string | null>(null);
   const [activeType, setActiveType] = useState<typeof types[number]>('전체');
-
-  const filtered = activeType === '전체' ? samples : samples.filter(s => s.type === activeType);
 
   return (
     <>

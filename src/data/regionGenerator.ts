@@ -14,7 +14,7 @@ export interface SubRegionData {
  * 기존 수작업 페이지와 동일한 H태그 구조, break, FAQ 패턴을 유지
  */
 export function generateSubRegionPage(
-  parentRegion: string,
+  _parentRegion: string,
   data: SubRegionData,
 ): RegionPage {
   const { slug, region, keywords, desc } = data;

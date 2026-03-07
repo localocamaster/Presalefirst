@@ -42,7 +42,7 @@ export default function TemplateLayout({ data, theme }: Props) {
     const id = href.replace('#', '');
     const el = document.getElementById(id);
     if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 64;
+      const top = el.getBoundingClientRect().top + window.scrollY - 112;
       window.scrollTo({ top, behavior: 'smooth' });
     }
     setMobileOpen(false);
@@ -82,7 +82,7 @@ export default function TemplateLayout({ data, theme }: Props) {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerBorder}`}
         style={{ background: headerBg, boxShadow: headerShadow }}
       >
-        <div className="flex items-center justify-between h-14 md:h-16 px-3 md:px-4 max-w-6xl mx-auto">
+        <div className="flex items-center justify-between h-20 md:h-20 px-3 md:px-4 max-w-6xl mx-auto">
           {/* Logo */}
           <button
             onClick={() => scrollTo('#overview')}
@@ -130,12 +130,12 @@ export default function TemplateLayout({ data, theme }: Props) {
                 key={item.label}
                 onClick={() => scrollTo(item.href)}
                 className={isLuxia
-                  ? 'px-4 py-1.5 text-[14px] font-medium text-gray-300 hover:text-white transition-colors'
+                  ? 'px-4 py-2.5 text-[15px] font-medium text-gray-300 hover:text-white transition-colors'
                   : isSsy
-                    ? 'px-4 py-1.5 text-[14px] font-bold text-gray-700 hover:text-[#2d3a8c] transition-colors'
+                    ? 'px-4 py-2.5 text-[15px] font-bold text-gray-700 hover:text-[#2d3a8c] transition-colors'
                     : isDalseo
-                      ? 'px-4 py-1.5 text-[14px] font-bold text-gray-700 hover:text-[#166534] transition-colors'
-                      : 'px-4 py-1.5 text-[15px] font-bold text-gray-800 hover:text-blue-700 transition-colors border-r border-gray-200 last:border-0'
+                      ? 'px-4 py-2.5 text-[15px] font-bold text-gray-700 hover:text-[#166534] transition-colors'
+                      : 'px-4 py-2.5 text-base font-bold text-gray-800 hover:text-blue-700 transition-colors border-r border-gray-200 last:border-0'
                 }
               >
                 {item.label}
@@ -144,14 +144,14 @@ export default function TemplateLayout({ data, theme }: Props) {
             {isLuxia ? (
               <button
                 onClick={() => scrollTo('#reservation')}
-                className="ml-5 px-5 py-2 rounded-full text-[14px] font-bold text-black bg-white hover:bg-gray-200 transition-all flex items-center gap-1.5"
+                className="ml-5 px-6 py-2.5 rounded-full text-[15px] font-bold text-black bg-white hover:bg-gray-200 transition-all flex items-center gap-1.5"
               >
                 <Phone className="w-4 h-4" /> {data.contactPhone}
               </button>
             ) : (
               <button
                 onClick={() => scrollTo('#reservation')}
-                className="ml-4 px-5 py-2 rounded-lg text-[14px] font-extrabold text-white flex items-center gap-1.5 transition-colors"
+                className="ml-4 px-6 py-2.5 rounded-lg text-[15px] font-extrabold text-white flex items-center gap-1.5 transition-colors"
                 style={{ background: themeColor }}
               >
                 <Phone className="w-4 h-4" /> {data.contactPhone}
@@ -160,10 +160,10 @@ export default function TemplateLayout({ data, theme }: Props) {
           </nav>
 
           {/* Mobile Toggle */}
-          <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="md:hidden p-2.5" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen
-              ? <X className={`w-6 h-6 ${isLuxia ? 'text-white' : ''}`} />
-              : <Menu className={`w-6 h-6 ${isLuxia ? 'text-white' : ''}`} />}
+              ? <X className={`w-7 h-7 ${isLuxia ? 'text-white' : ''}`} />
+              : <Menu className={`w-7 h-7 ${isLuxia ? 'text-white' : ''}`} />}
           </button>
         </div>
 
@@ -176,7 +176,7 @@ export default function TemplateLayout({ data, theme }: Props) {
                   <button
                     key={item.label}
                     onClick={() => scrollTo(item.href)}
-                    className="w-full text-left px-4 py-3 text-sm font-medium text-gray-300 border-b border-white/5 last:border-0"
+                    className="w-full text-left px-4 py-3.5 text-[15px] font-medium text-gray-300 border-b border-white/5 last:border-0"
                   >
                     {item.label}
                   </button>
@@ -196,7 +196,7 @@ export default function TemplateLayout({ data, theme }: Props) {
                 <button
                   key={item.label}
                   onClick={() => scrollTo(item.href)}
-                  className="block w-full text-left px-5 py-3 text-[13px] font-medium text-gray-700 border-b border-gray-100 hover:bg-gray-50"
+                  className="block w-full text-left px-5 py-3.5 text-[15px] font-medium text-gray-700 border-b border-gray-100 hover:bg-gray-50"
                 >
                   {item.label}
                 </button>
@@ -207,7 +207,7 @@ export default function TemplateLayout({ data, theme }: Props) {
       </header>
 
       {/* ── Main: Image Sections ── */}
-      <main className={`pt-16 ${isLuxia ? 'bg-[#0a0a0a]' : 'bg-gray-100'}`}>
+      <main className={`pt-28 ${isLuxia ? 'bg-[#0a0a0a]' : 'bg-gray-100'}`}>
         <div className={`mx-auto shadow-lg ${isLuxia ? 'max-w-screen-xl bg-black' : 'max-w-screen-lg bg-white'}`}>
           {data.sections.map((section) => (
             <section key={section.id} id={section.id}>
@@ -388,7 +388,7 @@ export default function TemplateLayout({ data, theme }: Props) {
                         className="mt-0.5 w-4 h-4 rounded"
                       />
                       <span className="text-sm text-gray-600">
-                        <Link to="/terms" target="_blank" className="underline hover:opacity-80">이용약관</Link> 및 <Link to="/privacy" target="_blank" className="underline hover:opacity-80">개인정보처리방침</Link>에 동의합니다 *
+                        <span className="underline">이용약관</span> 및 <span className="underline">개인정보처리방침</span>에 동의합니다 *
                       </span>
                     </label>
                     <button
