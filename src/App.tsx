@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
@@ -15,14 +15,20 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Map from './pages/Map';
 import MapRegion from './pages/MapRegion';
+import Admin from './pages/Admin';
+import ContentDemoLoader from './components/ContentDemoLoader';
+import AdminCustomers from './pages/admin/AdminCustomers';
+import AdminStats from './pages/admin/AdminStats';
+import AdminFraud from './pages/admin/AdminFraud';
 
 function Layout() {
   const { pathname } = useLocation();
   const isDemo = pathname.startsWith('/demo') || pathname.startsWith('/p/');
+  const isAdmin = pathname.startsWith('/admin');
 
   return (
     <div className="flex flex-col min-h-screen">
-      {!isDemo && <Header />}
+      {!isDemo && !isAdmin && <Header />}
       <main className="flex-1">
         <Routes>
             <Route path="/" element={<Home />} />
@@ -34,7 +40,11 @@ function Layout() {
             <Route path="/demo/:slug/business/:subpage" element={<Demo />} />
             <Route path="/demo/:slug/complex/:subpage" element={<Demo />} />
             <Route path="/demo/:slug/unit/:subpage" element={<Demo />} />
-            <Route path="/p/:projectId" element={<Demo />} />
+            <Route path="/p/:projectId" element={<ContentDemoLoader />} />
+            <Route path="/p/:projectId/:subpage" element={<ContentDemoLoader />} />
+            <Route path="/p/:projectId/business/:subpage" element={<ContentDemoLoader />} />
+            <Route path="/p/:projectId/complex/:subpage" element={<ContentDemoLoader />} />
+            <Route path="/p/:projectId/unit/:subpage" element={<ContentDemoLoader />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
@@ -43,9 +53,15 @@ function Layout() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/map" element={<Map />} />
             <Route path="/map/:slug" element={<MapRegion />} />
+            <Route path="/admin" element={<Admin />}>
+              <Route index element={<Navigate to="/admin/customers" replace />} />
+              <Route path="customers" element={<AdminCustomers />} />
+              <Route path="stats" element={<AdminStats />} />
+              <Route path="fraud" element={<AdminFraud />} />
+            </Route>
         </Routes>
       </main>
-      {!isDemo && <Footer />}
+      {!isDemo && !isAdmin && <Footer />}
     </div>
   );
 }

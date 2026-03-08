@@ -24,7 +24,7 @@ const samples = [
   // { slug: 'premium-oceancity', title: '오션시티', type: '프리미엄형', desc: '블루 악센트의 다크 테마, 해운대 오션뷰 초고층 레지던스 프리미엄 분양 홈페이지', thumb: '/images/demo/premium/premium-nature.webp' },
   { slug: 'premium-freshhouse', title: '프레쉬하우스', type: '프리미엄형', desc: '풀스크린 섹션 전환과 골드 악센트 다크 테마, 커뮤니티·럭셔리·라이프 섹션 구성의 풀페이지형 분양 홈페이지', thumb: '/images/demo/freshhouse/hero2.webp' },
   { slug: 'premium-parkview', title: '상상 파크 뷰 ParkVIEW', type: '프리미엄형', desc: '한강뷰 프리미엄, 오렌지 악센트 다크 테마, 풀스크린 히어로와 프리미엄 섹션 구성의 고급 분양 홈페이지', thumb: '/images/demo/parkview/main-bg.png' },
-  { slug: 'premium-aurum', title: '아우름 레지던스 잠실', type: '프리미엄형', desc: '잠실유일의 시니어 레지던스, 골드 악센트 다크 테마, 프레스티지 서비스와 스마트 인테리어 구성의 프리미엄 분양 홈페이지', thumb: '/images/demo/aurum/0421b530aaa61.png' },
+  { slug: 'premium-forest', title: '더포레스트', type: '프리미엄형', desc: '자연친화 힐링라이프 더포레스트, 경기도 광주 곤지암에 위치한 3,000세대 대단지 랜드마크', thumb: '/images/demo/forest/main01.jpg' },
 ];
 
 export default function Samples() {

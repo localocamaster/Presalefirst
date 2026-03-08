@@ -8,7 +8,6 @@ const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 const validation_1 = require("./utils/validation");
-const smsService_1 = require("./services/smsService");
 const inquiryErrors_1 = require("./errors/inquiryErrors");
 const logger_1 = require("./utils/logger");
 dotenv.config();
@@ -140,8 +139,6 @@ exports.sendInquiryEmail = functions.https.onRequest(async (req, res) => {
       `,
             });
         }
-        // 3) 고객에게 접수 확인 문자 발송
-        await (0, smsService_1.sendInquiryConfirmationSms)(phone, name);
         await db.collection("inquiries").add({
             name,
             phone,

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Phone, X, Menu, UserPlus, ChevronDown, ChevronUp,
+  Phone, X, Menu, UserPlus, ChevronDown, ChevronUp, MessageCircle,
 } from 'lucide-react';
 import type {
   PremiumTemplateData,
@@ -61,6 +61,10 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
   const [regAgree1, setRegAgree1] = useState(false);
   const [regAgree2, setRegAgree2] = useState(false);
   const [regAgreeAll, setRegAgreeAll] = useState(false);
+  const [regAgreeSimple, setRegAgreeSimple] = useState(true);
+  const [regGender, setRegGender] = useState<string>('');
+  const [regAge, setRegAge] = useState<string>('');
+  const [regPhoneSimple, setRegPhoneSimple] = useState('');
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [trustOpen, setTrustOpen] = useState(false);
   const [headerHovered, setHeaderHovered] = useState(false);
@@ -101,6 +105,7 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
   const scheduleNav = data.navItems.find(n => n.label === '분양안내');
   const subscriptionNav = data.navItems.find(n => n.label === '청약안내');
   const registrationNav = data.navItems.find(n => n.label === '관심고객등록');
+  const visitNav = data.navItems.find(n => n.label === '방문예약신청');
   const lifeChildren = lifeNav?.children ?? [];
   const complexChildren = complexNav?.children ?? [];
   const unitChildren = unitNav?.children ?? [];
@@ -108,14 +113,17 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
   const scheduleChildren = scheduleNav?.children ?? [];
   const subscriptionChildren = subscriptionNav?.children ?? [];
   const registrationChildren = registrationNav?.children ?? [];
-  const isComplexPage = subpageId.startsWith('complex');
+  const visitChildren = visitNav?.children ?? [];
+  const isComplexPage = subpageId.startsWith('complex') || complexChildren.some(c => (c as { pageId?: string }).pageId === subpageId);
   const isUnitPage = subpageId.startsWith('unit');
   const isNewsPage = subpageId.startsWith('news');
   const isSchedulePage = subpageId.startsWith('schedule');
+  const isInfoPage = subpageId.startsWith('info-');
   const isSubscriptionPage = subpageId.startsWith('subscription');
   const isRegistrationPage = subpageId.startsWith('registration');
-  const snbChildren = isRegistrationPage ? registrationChildren : isSubscriptionPage ? subscriptionChildren : isNewsPage ? newsChildren : isSchedulePage ? scheduleChildren : isUnitPage ? unitChildren : isComplexPage ? complexChildren : lifeChildren;
-  const breadcrumbParent = isRegistrationPage ? '관심고객등록' : isSubscriptionPage ? '청약안내' : isNewsPage ? '홍보안내' : isSchedulePage ? '분양안내' : isUnitPage ? '세대안내' : isComplexPage ? '단지안내' : '사업안내';
+  const isVisitPage = visitChildren.some(c => (c as { pageId?: string }).pageId === subpageId);
+  const snbChildren = isRegistrationPage ? registrationChildren : isSubscriptionPage ? subscriptionChildren : isNewsPage ? newsChildren : isVisitPage ? visitChildren : isSchedulePage || isInfoPage ? scheduleChildren : isUnitPage ? unitChildren : isComplexPage ? complexChildren : lifeChildren;
+  const breadcrumbParent = isRegistrationPage ? '관심고객등록' : isSubscriptionPage ? '청약안내' : isNewsPage ? '홍보안내' : isVisitPage ? '방문예약신청' : isSchedulePage || isInfoPage ? '분양안내' : isUnitPage ? '세대안내' : isComplexPage ? '단지안내' : '사업안내';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,92 +193,83 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
       case 'location': {
         const p = currentPage as PremiumLocationSubPage;
         return (
-          <section className="py-12 md:py-16">
+          <section className="py-12 md:py-20">
             <div className="max-w-7xl mx-auto px-4">
-              {/* 서브비주얼 섹션 */}
-              <div className="mb-12 md:mb-16">
-                <div className="rounded-2xl overflow-hidden mb-8" style={{ background: ac }}>
-                  <div className="p-8 md:p-12 text-center">
-                    <p className="text-base md:text-lg mb-2 text-white">교통, 자연, 잠실 인프로 3박자를 완벽하게 갖춘</p>
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-6">아우름 레지던스 잠실</h3>
-                    <div className="max-w-4xl mx-auto">
-                      <img src={p.subVisualImage} alt="입지환경" className="w-full h-auto object-contain" loading="lazy" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* PREMIUM LOCATION 섹션 */}
-              {p.poiGroups && p.poiGroups.length > 0 && (
-                <div className="mb-12 md:mb-16">
-                  <div className="rounded-2xl overflow-hidden mb-6" style={{ background: cardBg, border: `1px solid ${borderC}` }}>
-                    <div className="p-6 md:p-8">
-                      <p className="text-center text-sm md:text-base font-bold mb-8 uppercase tracking-wider" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>PREMIUM LOCATION</p>
-                      {/* 모바일: 2열 그리드 */}
-                      <div className="md:hidden space-y-4">
-                        {p.poiGroups.map((group, i) => (
-                          <div key={i} className="flex items-start gap-4">
-                            <div className="flex-shrink-0">
-                              <img src={group.image} alt={group.title} className="w-16 h-16 object-contain" loading="lazy" />
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-bold mb-1 text-sm" style={{ color: isLightTheme ? '#76592e' : '#ffffff' }}>{group.title}</h4>
-                              <p className="text-xs leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
-                                {group.items[0]}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      {/* 데스크톱: 4열 테이블 형식 */}
-                      <div className="hidden md:block">
-                        <table className="w-full" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
-                          <tbody>
-                            <tr>
-                              {p.poiGroups.map((group, i) => (
-                                <td key={i} className="align-top p-4" style={{ width: '25%', verticalAlign: 'top' }}>
-                                  <div className="flex flex-col items-center text-center">
-                                    <div className="mb-4">
-                                      <img src={group.image} alt={group.title} className="w-20 h-20 object-contain mx-auto" loading="lazy" />
-                                    </div>
-                                    <h4 className="font-bold mb-2 text-base" style={{ color: isLightTheme ? '#76592e' : '#ffffff' }}>{group.title}</h4>
-                                    <p className="text-sm leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
-                                      {group.items[0]}
-                                    </p>
-                                  </div>
-                                </td>
-                              ))}
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* 제목 및 설명 */}
-              <div className="mb-8 md:mb-12">
-                <h2 className="text-2xl md:text-3xl font-bold text-center mb-6" style={{ color: isLightTheme ? ac : '#ffffff' }}>{p.contentTitle}</h2>
+              {/* 제목 섹션 */}
+              <div className="text-center mb-14 md:mb-20">
+                <h2 className="text-2xl md:text-4xl font-black tracking-tight mb-3" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
+                <p className="text-base md:text-lg font-medium mb-4" style={{ color: ac }}>{p.subtitle}</p>
                 {p.contentDesc && (
-                  <div className="text-center space-y-2 text-base md:text-lg leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }} dangerouslySetInnerHTML={{ __html: p.contentDesc }} />
+                  <p className="text-sm md:text-base leading-relaxed max-w-2xl mx-auto" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }} dangerouslySetInnerHTML={{ __html: p.contentDesc }} />
                 )}
               </div>
 
-              {/* 지도 이미지 */}
+              {/* 4개 카테고리 카드 - 2x2 그리드 */}
+              {p.poiGroups && p.poiGroups.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-16 md:mb-24">
+                  {p.poiGroups.map((group, i) => (
+                    <div
+                      key={i}
+                      className="group rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl"
+                      style={{
+                        background: cardBg,
+                        border: `1px solid ${borderC}`,
+                        boxShadow: isLightTheme ? '0 4px 20px rgba(0,0,0,0.06)' : 'none',
+                      }}
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden">
+                        <img
+                          src={group.image}
+                          alt={group.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div
+                          className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider"
+                          style={{ background: ac, color: '#fff' }}
+                        >
+                          {group.category}
+                        </div>
+                        {group.icon && (
+                          <div className="absolute bottom-4 right-4 w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.95)' }}>
+                            <img src={group.icon} alt="" className="w-8 h-8 object-contain" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-6 md:p-8">
+                        <h3 className="text-lg md:text-xl font-bold mb-3" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{group.title}</h3>
+                        <ul className="space-y-2">
+                          {group.items.map((item, j) => (
+                            <li key={j} className="flex items-start gap-2 text-sm leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                              <span className="flex-shrink-0 mt-1 w-1.5 h-1.5 rounded-full" style={{ background: ac }} />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* 메인 입지환경 이미지 */}
               {p.mainImage && (
-                <div className="rounded-xl overflow-hidden mb-10">
-                  <img src={p.mainImage} alt={p.title} className="w-full object-contain" loading="lazy" />
+                <div className="rounded-2xl overflow-hidden mb-16" style={{ boxShadow: isLightTheme ? '0 8px 30px rgba(0,0,0,0.12)' : '0 8px 30px rgba(0,0,0,0.3)' }}>
+                  <img src={p.mainImage} alt={`${p.title} 전체 조망`} className="w-full h-auto object-contain" loading="lazy" />
+                  <div className="p-4 md:p-6 text-center" style={{ background: isLightTheme ? '#fafafa' : 'rgba(0,0,0,0.2)' }}>
+                    <p className="text-sm font-medium" style={{ color: isLightTheme ? textSecondary : 'rgba(255,255,255,0.9)' }}>{p.contentTitle || `${data.projectName} 입지 전경`}</p>
+                  </div>
                 </div>
               )}
 
               {/* 주의사항 */}
               {p.caution && p.caution.length > 0 && (
-                <div className="rounded-xl p-6" style={{ background: isLightTheme ? '#f7f7f7' : cardBg, border: `1px solid ${borderC}` }}>
+                <div className="rounded-xl p-6 md:p-8" style={{ background: isLightTheme ? '#f8f8f8' : cardBg, border: `1px solid ${borderC}` }}>
+                  <p className="text-xs font-bold mb-4 uppercase tracking-wider" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>유의사항</p>
                   <ul className="space-y-2 text-xs md:text-sm leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
                     {p.caution.map((c, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="flex-shrink-0 mt-0.5">※</span>
+                        <span className="flex-shrink-0 mt-0.5" style={{ color: ac }}>※</span>
                         <span>{c}</span>
                       </li>
                     ))}
@@ -287,8 +286,8 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
           <section className="py-12 md:py-16">
             <div className="max-w-7xl mx-auto px-4">
               <div className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-black text-white">{p.title}</h2>
-                <p className="mt-2 text-gray-500">{p.subtitle}</p>
+                <h2 className="text-2xl md:text-3xl font-black" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
+                <p className="mt-2" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{p.subtitle}</p>
               </div>
               <div className="rounded-xl overflow-hidden">
                 <img 
@@ -304,21 +303,21 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
       }
       case 'directions': {
         const p = currentPage as PremiumDirectionsSubPage;
-        const kakaoUrl = p.kakaoMapUrl ?? `https://map.kakao.com/link/search/${encodeURIComponent(p.modelHouseAddress)}`;
-        const naverUrl = p.naverMapUrl ?? `https://map.naver.com/v5/search/${encodeURIComponent(p.modelHouseAddress)}`;
+        const kakaoUrl = p.kakaoMapUrl ?? `https://map.kakao.com/link/search/${encodeURIComponent(p.modelHouseAddress || '')}`;
+        const naverUrl = p.naverMapUrl ?? `https://map.naver.com/v5/search/${encodeURIComponent(p.modelHouseAddress || '')}`;
         return (
           <section className="py-12 md:py-16">
             <div className="max-w-5xl mx-auto px-4">
               <div className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-black text-white">{p.title}</h2>
-                <p className="mt-2 text-gray-500">{p.subtitle}</p>
+                <h2 className="text-2xl md:text-3xl font-black" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
+                <p className="mt-2" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{p.subtitle}</p>
               </div>
-              {p.descTitle && <p className="text-lg font-bold text-white mb-6">{p.descTitle}</p>}
+              {p.descTitle && <p className="text-lg font-bold mb-6" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.descTitle}</p>}
               <div className="space-y-4 mb-6">
-                {p.addresses.map((a, i) => (
+                {p.addresses?.map((a, i) => (
                   <div key={i} className="flex flex-col sm:flex-row sm:items-center gap-2">
-                    <span className="text-sm font-bold text-white w-24">{a.label}</span>
-                    <span className="text-sm text-gray-400">{a.address}</span>
+                    <span className="text-sm font-bold w-24" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{a.label}</span>
+                    <span className="text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{a.address}</span>
                   </div>
                 ))}
               </div>
@@ -327,18 +326,18 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
                   className="px-4 py-2 rounded text-sm font-bold" style={{ background: '#FEE500', color: '#3c1e1e' }}>카카오맵</a>
                 <a href={naverUrl} target="_blank" rel="noopener noreferrer"
                   className="px-4 py-2 rounded text-sm font-bold text-white" style={{ background: '#03C75A' }}>네이버지도</a>
-                <span className="text-sm text-gray-500">|</span>
+                <span className="text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>|</span>
                 <span className="text-sm font-bold" style={{ color: ac }}>분양문의</span>
-                <a href={`tel:${data.contactPhone}`} className="text-white font-bold">{data.contactPhone}</a>
+                <a href={`tel:${data.contactPhone}`} className="font-bold" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{data.contactPhone}</a>
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="rounded-xl overflow-hidden" style={{ background: cardBg, border: `1px solid ${borderC}` }}>
                   <div className="overflow-hidden">
-                    <img src={p.modelHouseImage} alt="모델하우스" className="w-full object-contain" loading="lazy" />
+                    <img src={p.modelHouseImage} alt="견본주택" className="w-full object-contain" loading="lazy" />
                   </div>
                   <div className="p-4">
-                    <h4 className="font-bold text-white mb-1">모델하우스</h4>
-                    <p className="text-sm text-gray-400">{p.modelHouseAddress}</p>
+                    <h4 className="font-bold mb-1" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>견본주택</h4>
+                    <p className="text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{p.modelHouseAddress}</p>
                   </div>
                 </div>
                 <div className="rounded-xl overflow-hidden" style={{ background: cardBg, border: `1px solid ${borderC}` }}>
@@ -346,13 +345,13 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
                     <img src={p.siteImage} alt="현장" className="w-full object-contain" loading="lazy" />
                   </div>
                   <div className="p-4">
-                    <h4 className="font-bold text-white mb-1">현장</h4>
-                    <p className="text-sm text-gray-400">{p.siteAddress}</p>
+                    <h4 className="font-bold mb-1" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>현장</h4>
+                    <p className="text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{p.siteAddress}</p>
                   </div>
                 </div>
               </div>
               {p.caution && p.caution.length > 0 && (
-                <ul className="mt-10 space-y-2 text-xs text-gray-500 leading-relaxed">
+                <ul className="mt-10 space-y-2 text-xs leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
                   {p.caution.map((c, i) => <li key={i}>• {c}</li>)}
                 </ul>
               )}
@@ -363,16 +362,22 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
       case 'complexCommunity': {
         const p = currentPage as PremiumComplexCommunitySubPage;
         return (
-          <section className="py-12 md:py-16">
+          <section className="py-12 md:py-20">
             <div className="max-w-7xl mx-auto px-4">
-              <div className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-black" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
-                <p className="mt-2" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{p.subtitle}</p>
+              <div className="text-center mb-12 md:mb-16">
+                <h2 className="text-2xl md:text-4xl font-black tracking-tight mb-3" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
+                <p className="text-base md:text-lg font-medium mb-4" style={{ color: ac }}>{p.subtitle}</p>
                 {p.caption && (
-                  <p className="mt-4 text-lg font-medium" style={{ color: isLightTheme ? textPrimary : 'rgba(255,255,255,0.8)' }}>{p.caption}</p>
+                  <p className="text-sm md:text-base font-medium mb-4" style={{ color: isLightTheme ? textPrimary : 'rgba(255,255,255,0.9)' }}>{p.caption}</p>
+                )}
+                {p.contentTitle && (
+                  <h3 className="text-lg md:text-xl font-bold mb-2" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.contentTitle}</h3>
+                )}
+                {p.contentDesc && (
+                  <p className="text-sm md:text-base leading-relaxed max-w-2xl mx-auto" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }} dangerouslySetInnerHTML={{ __html: p.contentDesc }} />
                 )}
               </div>
-              <div className="rounded-xl overflow-hidden mb-10">
+              <div className="rounded-2xl overflow-hidden mb-12" style={{ boxShadow: isLightTheme ? '0 8px 30px rgba(0,0,0,0.12)' : '0 8px 30px rgba(0,0,0,0.3)' }}>
                 <img 
                   src={p.mobileImage && isMobile ? p.mobileImage : p.mainImage} 
                   alt={p.title} 
@@ -381,9 +386,17 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
                 />
               </div>
               {p.caution && p.caution.length > 0 && (
-                <ul className="space-y-2 text-xs leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
-                  {p.caution.map((c, i) => <li key={i}>• {c}</li>)}
-                </ul>
+                <div className="rounded-xl p-6 md:p-8" style={{ background: isLightTheme ? '#f8f8f8' : cardBg, border: `1px solid ${borderC}` }}>
+                  <p className="text-xs font-bold mb-4 uppercase tracking-wider" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>유의사항</p>
+                  <ul className="space-y-2 text-xs md:text-sm leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                    {p.caution.map((c, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="flex-shrink-0 mt-0.5" style={{ color: ac }}>※</span>
+                        <span>{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </div>
           </section>
@@ -434,23 +447,31 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
         const p = currentPage as PremiumComplexFloorplanSubPage;
         const imagesToShow = p.images && p.images.length > 0 ? p.images : (p.mainImage ? [p.mainImage] : []);
         return (
-          <section className="py-12 md:py-16">
+          <section className="py-12 md:py-20">
             <div className="max-w-7xl mx-auto px-4">
-              <div className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-black text-white">{p.title}</h2>
-                <p className="mt-2 text-gray-500">{p.subtitle}</p>
+              <div className="text-center mb-12 md:mb-16">
+                <h2 className="text-2xl md:text-4xl font-black tracking-tight mb-3" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
+                <p className="text-base md:text-lg font-medium" style={{ color: ac }}>{p.subtitle}</p>
               </div>
-              <div className="space-y-6">
+              <div className="space-y-6 mb-12">
                 {imagesToShow.map((img, i) => (
-                  <div key={i} className="rounded-xl overflow-hidden">
+                  <div key={i} className="rounded-2xl overflow-hidden" style={{ boxShadow: isLightTheme ? '0 8px 30px rgba(0,0,0,0.12)' : '0 8px 30px rgba(0,0,0,0.3)' }}>
                     <img src={img} alt={`${p.title} ${i + 1}`} className="w-full h-auto object-contain" loading="lazy" />
                   </div>
                 ))}
               </div>
               {p.caution && p.caution.length > 0 && (
-                <ul className="mt-10 space-y-2 text-xs text-gray-500 leading-relaxed">
-                  {p.caution.map((c, i) => <li key={i}>• {c}</li>)}
-                </ul>
+                <div className="rounded-xl p-6 md:p-8" style={{ background: isLightTheme ? '#f8f8f8' : cardBg, border: `1px solid ${borderC}` }}>
+                  <p className="text-xs font-bold mb-4 uppercase tracking-wider" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>유의사항</p>
+                  <ul className="space-y-2 text-xs md:text-sm leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                    {p.caution.map((c, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="flex-shrink-0 mt-0.5" style={{ color: ac }}>※</span>
+                        <span>{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </div>
           </section>
@@ -500,50 +521,76 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
       }
       case 'complexInfo': {
         const p = currentPage as PremiumComplexInfoSubPage;
+        const hasMultipleWithDesc = p.images.length > 1 && p.images.some(img => img.title || img.description);
         return (
-          <section className="py-12 md:py-16">
+          <section className="py-12 md:py-20">
             <div className="max-w-7xl mx-auto px-4">
-              <div className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-black" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
-                <p className="mt-2" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{p.subtitle}</p>
+              <div className="text-center mb-12 md:mb-16">
+                <h2 className="text-2xl md:text-4xl font-black tracking-tight mb-3" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
+                <p className="text-base md:text-lg font-medium mb-4" style={{ color: ac }}>{p.subtitle}</p>
                 {p.caption && (
-                  <p className="mt-4 text-lg font-medium" style={{ color: isLightTheme ? textPrimary : 'rgba(255,255,255,0.8)' }}>{p.caption}</p>
+                  <p className="text-sm md:text-base font-medium mb-4" style={{ color: isLightTheme ? textPrimary : 'rgba(255,255,255,0.9)' }}>{p.caption}</p>
                 )}
                 {p.contentTitle && (
-                  <h3 className="mt-6 text-xl md:text-2xl font-bold" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.contentTitle}</h3>
+                  <h3 className="text-lg md:text-xl font-bold mb-2" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.contentTitle}</h3>
                 )}
                 {p.contentDesc && (
-                  <div className="mt-4 text-base md:text-lg leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }} dangerouslySetInnerHTML={{ __html: p.contentDesc }} />
+                  <p className="text-sm md:text-base leading-relaxed max-w-2xl mx-auto" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }} dangerouslySetInnerHTML={{ __html: p.contentDesc }} />
                 )}
               </div>
-              <div className="space-y-6 md:space-y-8">
-                {p.images.map((item, i) => (
-                  <div key={i} className="rounded-xl overflow-hidden">
-                    <img 
-                      src={item.image} 
-                      alt={item.title || `${p.title} ${i + 1}`} 
-                      className="w-full h-auto object-contain" 
-                      loading="lazy" 
-                    />
-                    {(item.title || item.description) && (
-                      <div className="mt-4 text-center">
+              {hasMultipleWithDesc ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-16">
+                  {p.images.map((item, i) => (
+                    <div
+                      key={i}
+                      className="group rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl"
+                      style={{
+                        background: cardBg,
+                        border: `1px solid ${borderC}`,
+                        boxShadow: isLightTheme ? '0 4px 20px rgba(0,0,0,0.06)' : 'none',
+                      }}
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.title || `${p.title} ${i + 1}`}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="p-6">
                         {item.title && (
-                          <p className="text-lg font-medium mb-1" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{item.title}</p>
+                          <h4 className="text-lg font-bold mb-2" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{item.title}</h4>
                         )}
                         {item.description && (
-                          <p className="text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{item.description}</p>
+                          <p className="text-sm leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{item.description}</p>
                         )}
                       </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-6 mb-12">
+                  {p.images.map((item, i) => (
+                    <div key={i} className="rounded-2xl overflow-hidden" style={{ boxShadow: isLightTheme ? '0 8px 30px rgba(0,0,0,0.12)' : '0 8px 30px rgba(0,0,0,0.3)' }}>
+                      <img src={item.image} alt={item.title || `${p.title} ${i + 1}`} className="w-full h-auto object-contain" loading="lazy" />
+                      {(item.title || item.description) && (
+                        <div className="p-6 text-center" style={{ background: isLightTheme ? '#fafafa' : 'rgba(0,0,0,0.2)' }}>
+                          {item.title && <p className="text-lg font-medium mb-1" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{item.title}</p>}
+                          {item.description && <p className="text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{item.description}</p>}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
               {p.caution && p.caution.length > 0 && (
-                <div className="mt-10 rounded-xl p-6" style={{ background: isLightTheme ? '#f7f7f7' : cardBg, border: `1px solid ${borderC}` }}>
+                <div className="rounded-xl p-6 md:p-8" style={{ background: isLightTheme ? '#f8f8f8' : cardBg, border: `1px solid ${borderC}` }}>
+                  <p className="text-xs font-bold mb-4 uppercase tracking-wider" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>유의사항</p>
                   <ul className="space-y-2 text-xs md:text-sm leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
                     {p.caution.map((c, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="flex-shrink-0 mt-0.5">※</span>
+                        <span className="flex-shrink-0 mt-0.5" style={{ color: ac }}>※</span>
                         <span dangerouslySetInnerHTML={{ __html: c }} />
                       </li>
                     ))}
@@ -743,18 +790,19 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
       }
       case 'document': {
         const p = currentPage as PremiumDocumentSubPage;
+        const docAlign = isVisitPage ? 'text-left' : 'text-center';
         return (
           <section className="py-12 md:py-16">
             <div className="max-w-7xl mx-auto px-4">
-              <div className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-black text-white">{p.title}</h2>
-                <p className="mt-2 text-gray-500">{p.subtitle}</p>
+              <div className={`mb-10 ${docAlign}`}>
+                <h2 className="text-2xl md:text-3xl font-black" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
+                <p className="mt-2" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{p.subtitle}</p>
               </div>
               <div className="rounded-xl overflow-hidden">
                 <img src={p.image} alt={p.title} className="w-full h-auto object-contain" loading="lazy" />
               </div>
               {p.caution && p.caution.length > 0 && (
-                <ul className="mt-10 space-y-2 text-xs text-gray-500 leading-relaxed">
+                <ul className="mt-10 space-y-2 text-xs leading-relaxed" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
                   {p.caution.map((c, i) => <li key={i}>• {c}</li>)}
                 </ul>
               )}
@@ -873,61 +921,109 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
       }
       case 'news': {
         const p = currentPage as PremiumNewsSubPage;
+        const firstItem = p.items[0];
+        const useListFormat = isVisitPage && p.featuredImage && firstItem;
         return (
           <section className="py-12 md:py-16">
             <div className="max-w-7xl mx-auto px-4">
-              <div className="text-center mb-10">
+              <div className="mb-8">
                 <h2 className="text-2xl md:text-3xl font-black" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
                 <p className="mt-2" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{p.subtitle}</p>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse" style={{ borderColor: borderC }}>
-                  <thead>
-                    <tr style={{ background: cardBg, borderBottom: `1px solid ${borderC}` }}>
-                      <th className="px-4 py-3 text-left text-xs font-bold uppercase" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>번호</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold uppercase" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>제목</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold uppercase" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>언론사</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold uppercase" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>등록일</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              {isVisitPage && (
+                <form method="get" className="mb-6">
+                  <div className="flex gap-2">
+                    <input type="text" name="search" placeholder="검색" className="flex-1 h-11 px-4 rounded-lg" style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} />
+                    <button type="submit" className="px-6 h-11 rounded-lg font-bold text-white" style={{ background: ac }}>검색</button>
+                  </div>
+                </form>
+              )}
+              {useListFormat && (
+                <>
+                  <figure className="flex flex-col md:flex-row gap-6 mb-10 p-6 rounded-xl" style={{ background: cardBg, border: `1px solid ${borderC}` }}>
+                    <img src={p.featuredImage} alt="" className="w-full md:w-80 flex-shrink-0 object-cover rounded-lg" />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-bold" style={{ color: ac }}>{firstItem.source}</span>
+                      <h3 className="text-lg font-bold mt-1" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{firstItem.title}</h3>
+                      <p className="text-sm mt-2 line-clamp-4" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                        {(firstItem as { summary?: string }).summary || '건폐율에 대한 수요자들의 관심이 상승하고 있다. 건폐율은 대지면적 대비 건축면적 비율을 뜻하는 용어로 해당 비율이 낮을 수록 건물이 차지하는 공간이 적어진다.'}
+                      </p>
+                      <a href={firstItem.url} className="inline-block mt-3 text-sm font-bold" style={{ color: ac }}>more</a>
+                    </div>
+                  </figure>
+                  <ul className="space-y-0 divide-y" style={{ borderColor: borderC }}>
                     {p.items.map((item, i) => (
-                      <tr
-                        key={i}
-                        className="border-b transition-colors"
-                        style={{ borderColor: borderC, background: isLightTheme ? (i % 2 === 0 ? '#ffffff' : '#f8f8f8') : 'transparent' }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = isLightTheme ? '#f0f0f0' : 'rgba(255,255,255,0.05)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = isLightTheme ? (i % 2 === 0 ? '#ffffff' : '#f8f8f8') : 'transparent';
-                        }}
-                      >
-                        <td className="px-4 py-3 text-sm" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>
-                          {item.number ?? i + 1}
-                        </td>
-                        <td className="px-4 py-3 text-sm" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }}>
-                          <a
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:underline"
-                            style={{ color: isLightTheme ? textPrimary : '#ffffff' }}
-                          >
-                            {item.title}
-                          </a>
-                        </td>
-                        <td className="px-4 py-3 text-sm" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>
-                          {item.source}
-                        </td>
-                        <td className="px-4 py-3 text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
-                          {item.date}
-                        </td>
-                      </tr>
+                      <li key={i} style={{ borderColor: borderC }}>
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block py-4 px-2 hover:opacity-80 transition-opacity"
+                        >
+                          <span className="text-sm font-bold" style={{ color: ac }}>[ {item.source} ]</span>
+                          <h4 className="text-base font-bold mt-1 mb-2" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{item.title}</h4>
+                          {(item as { summary?: string }).summary && (
+                            <div className="text-sm line-clamp-2 mb-2" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                              {(item as { summary?: string }).summary}
+                            </div>
+                          )}
+                          <span className="text-sm font-bold" style={{ color: ac }}>more</span>
+                        </a>
+                      </li>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </ul>
+                </>
+              )}
+              {!useListFormat && (
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse" style={{ borderColor: borderC }}>
+                    <thead>
+                      <tr style={{ background: cardBg, borderBottom: `1px solid ${borderC}` }}>
+                        <th className="px-4 py-3 text-left text-xs font-bold uppercase" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>번호</th>
+                        <th className="px-4 py-3 text-left text-xs font-bold uppercase" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>제목</th>
+                        <th className="px-4 py-3 text-left text-xs font-bold uppercase" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>언론사</th>
+                        <th className="px-4 py-3 text-left text-xs font-bold uppercase" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>등록일</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {p.items.map((item, i) => (
+                        <tr
+                          key={i}
+                          className="border-b transition-colors"
+                          style={{ borderColor: borderC, background: isLightTheme ? (i % 2 === 0 ? '#ffffff' : '#f8f8f8') : 'transparent' }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = isLightTheme ? '#f0f0f0' : 'rgba(255,255,255,0.05)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = isLightTheme ? (i % 2 === 0 ? '#ffffff' : '#f8f8f8') : 'transparent';
+                          }}
+                        >
+                          <td className="px-4 py-3 text-sm" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                            {item.number ?? i + 1}
+                          </td>
+                          <td className="px-4 py-3 text-sm" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }}>
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline"
+                              style={{ color: isLightTheme ? textPrimary : '#ffffff' }}
+                            >
+                              {item.title}
+                            </a>
+                          </td>
+                          <td className="px-4 py-3 text-sm" style={{ borderRight: `1px solid ${borderC}`, color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                            {item.source}
+                          </td>
+                          <td className="px-4 py-3 text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                            {item.date}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </section>
         );
@@ -978,6 +1074,108 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
       }
       case 'registration': {
         const p = currentPage as PremiumRegistrationSubPage;
+        if (p.formVariant === 'simple') {
+          const handleSimpleSubmit = (e: React.FormEvent) => {
+            e.preventDefault();
+            if (!regAgreeSimple) {
+              alert('개인정보 수집에 동의해 주세요.');
+              return;
+            }
+            if (!regName.trim()) {
+              alert('이름을 입력해 주세요.');
+              return;
+            }
+            if (!regPhoneSimple.trim() || regPhoneSimple.replace(/\D/g, '').length < 10) {
+              alert('연락처를 입력해 주세요.');
+              return;
+            }
+            if (!regGender) {
+              alert('성별을 선택해 주세요.');
+              return;
+            }
+            if (!regAge) {
+              alert('연령대를 선택해 주세요.');
+              return;
+            }
+            alert('방문예약신청이 완료되었습니다.');
+            setRegName('');
+            setRegPhoneSimple('');
+            setRegGender('');
+            setRegAge('');
+            setRegAgreeSimple(true);
+          };
+          return (
+            <section className="py-8 md:py-12">
+              <div className="max-w-xl">
+                <div className="mb-6">
+                  <h2 className="text-2xl md:text-3xl font-black" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{p.title}</h2>
+                  <p className="mt-2 text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{p.subtitle}</p>
+                </div>
+                <div className="mb-6 p-4 rounded-lg overflow-hidden" style={{ background: cardBg, border: `1px solid ${borderC}` }}>
+                  <p className="text-sm font-bold mb-3" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>개인정보 수집 및 이용에 대한 동의</p>
+                  <div className="h-24 overflow-y-auto text-xs mb-4" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                    <p>고객님의 개인정보는 개인정보보호법 및 정보통신망법에 따라 안전하게 보관되며 분양완료 후 자동파기됩니다.</p>
+                    <p className="mt-2">고객님의 소중한 정보는 분양 이외의 목적으로 사용되지 않습니다.</p>
+                    <p className="mt-2">서비스 제공을 위해서 필요한 최소한의 개인정보이므로 동의를 해주셔야 서비스를 이용하실 수 있습니다.</p>
+                  </div>
+                </div>
+                <form onSubmit={handleSimpleSubmit} className="space-y-4">
+                  <div className="flex flex-wrap items-center gap-4 py-2">
+                    <span className="text-sm" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>(필수)위 개인정보의 수집에 동의합니다.</span>
+                    <div className="flex gap-6">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="agreeSimple" checked={regAgreeSimple} onChange={() => setRegAgreeSimple(true)} className="w-4 h-4" />
+                        <span className="text-sm" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>동의함</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="agreeSimple" checked={!regAgreeSimple} onChange={() => setRegAgreeSimple(false)} className="w-4 h-4" />
+                        <span className="text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>동의안함</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>이름</label>
+                    <input type="text" value={regName} onChange={(e) => setRegName(e.target.value)} placeholder="이름입력" className="w-full h-11 px-4 rounded-lg" style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>연락처</label>
+                    <input type="tel" value={regPhoneSimple} onChange={(e) => setRegPhoneSimple(e.target.value.replace(/\D/g, ''))} placeholder="-없이 숫자만입력" className="w-full h-11 px-4 rounded-lg" style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>성별</label>
+                    <div className="flex gap-6">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="gender" checked={regGender === '남'} onChange={() => setRegGender('남')} className="w-4 h-4" />
+                        <span className="text-sm" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>남</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="gender" checked={regGender === '여'} onChange={() => setRegGender('여')} className="w-4 h-4" />
+                        <span className="text-sm" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>여</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>나이</label>
+                    <select value={regAge} onChange={(e) => setRegAge(e.target.value)} className="w-full h-11 px-4 rounded-lg" style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }}>
+                      <option value="">나이를 선택해주세요.</option>
+                      <option value="20">20대</option>
+                      <option value="30">30대</option>
+                      <option value="40">40대</option>
+                      <option value="50">50대</option>
+                      <option value="60">60대</option>
+                    </select>
+                  </div>
+                  <ul className="text-xs space-y-1 py-4 list-none" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                    <li>• 고객님의 개인정보는 개인정보보호법 및 정보통신망법에 따라 안전하게 보관되며 분양완료 후 자동파기됩니다.</li>
+                    <li>• 고객님의 소중한 정보는 분양 이외의 목적으로 사용되지 않습니다.</li>
+                    <li>• 서비스 제공을 위해서 필요한 최소한의 개인정보이므로 동의를 해주셔야 서비스를 이용하실 수 있습니다.</li>
+                  </ul>
+                  <button type="submit" className="w-full py-4 rounded-lg font-bold text-white" style={{ background: ac }}>방문예약신청하기</button>
+                </form>
+              </div>
+            </section>
+          );
+        }
         const koreanProvinces = ['강원', '경기', '경남', '경북', '광주', '대구', '대전', '부산', '서울', '세종', '울산', '인천', '전남', '전북', '제주', '충남', '충북'];
         const phonePrefixes = ['010', '011', '016', '019', '017', '018'];
         
@@ -1455,21 +1653,43 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
 
               <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
                 {data.navItems.map((item) => {
-                  // aurum 프로젝트는 드롭다운 없이 바로 서브페이지로 이동
-                  if (slug === 'premium-aurum' && item.children && item.children.length > 0) {
-                    const firstChild = item.children[0];
-                    const pageId = (firstChild as { pageId?: string }).pageId;
-                    if (pageId && data.subPages?.some(sp => sp.pageId === pageId)) {
-                      return (
-                        <Link
-                          key={item.label}
-                          to={subUrl(slug, pageId)}
-                          className={`px-5 xl:px-6 py-3 text-lg xl:text-xl font-medium transition-colors block ${isLightHeader ? 'text-gray-700 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
-                        >
+                  // premium-forest 포함, pageId가 있는 children이 있으면 드롭다운 표시
+                  const hasSubPages = item.children?.some(c => data.subPages?.some(sp => sp.pageId === (c as { pageId?: string }).pageId));
+                  if (hasSubPages && slug) {
+                    return (
+                      <div
+                        key={item.label}
+                        className="relative"
+                        onMouseEnter={() => item.children && setOpenDropdown(item.label)}
+                        onMouseLeave={() => setOpenDropdown(null)}
+                      >
+                        <Link to={baseUrl(slug)} className={`px-5 xl:px-6 py-3 text-lg xl:text-xl font-medium transition-colors flex items-center gap-1 ${isLightHeader ? 'text-gray-700 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}>
                           {item.label}
+                          <ChevronDown className="w-5 h-5" />
                         </Link>
-                      );
-                    }
+                        {openDropdown === item.label && (
+                          <div
+                            className="absolute top-full left-0 pt-1 min-w-[160px] py-2 rounded-b-lg z-50"
+                            style={{ background: hdrBg, border: `1px solid ${borderC}` }}
+                          >
+                            <div className="flex flex-col">
+                              {item.children!.map((child) => {
+                                const pageId = (child as { pageId?: string }).pageId;
+                                return data.subPages?.some(sp => sp.pageId === pageId) ? (
+                                  <Link key={child.label} to={subUrl(slug, pageId!)} className={`block w-full text-left px-8 py-2.5 text-[15px] transition-colors ${isLightHeader ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+                                    {child.label}
+                                  </Link>
+                                ) : (
+                                  <Link key={child.label} to={baseUrl(slug)} className={`block w-full text-left px-8 py-2.5 text-[15px] transition-colors ${isLightHeader ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+                                    {child.label}
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
                   }
                   
                   // 기존 드롭다운 로직 (다른 프로젝트용)
@@ -1477,8 +1697,8 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
                     <div
                       key={item.label}
                       className="relative"
-                      onMouseEnter={() => item.children && slug !== 'premium-aurum' && setOpenDropdown(item.label)}
-                      onMouseLeave={() => slug !== 'premium-aurum' && setOpenDropdown(null)}
+                      onMouseEnter={() => item.children && setOpenDropdown(item.label)}
+                      onMouseLeave={() => setOpenDropdown(null)}
                     >
                       {item.children && item.children.some(c => data.subPages?.some(sp => sp.pageId === (c as { pageId?: string }).pageId)) && slug !== 'premium-aurum' ? (
                         <>
@@ -1661,6 +1881,21 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
                 })}
               </>
             )}
+            {visitChildren.length > 0 && (
+              <>
+                <p className={`px-5 py-2.5 text-xs font-bold uppercase ${isLightHeader ? 'text-gray-600' : 'text-gray-500'}`}>방문예약신청</p>
+                {visitChildren.map((c) => {
+                  const pageId = (c as { pageId?: string }).pageId;
+                  return pageId && data.subPages?.some(sp => sp.pageId === pageId) ? (
+                    <Link key={c.label} to={subUrl(slug, pageId)} onClick={() => setMobileOpen(false)}
+                      className={`block px-8 py-3 text-[14px] border-b ${subpageId === pageId ? (isLightHeader ? 'text-gray-900 font-bold' : 'text-white font-bold') : (isLightHeader ? 'text-gray-600' : 'text-gray-500')}`}
+                      style={{ borderColor: borderC }}>
+                      {c.label}
+                    </Link>
+                  ) : null;
+                })}
+              </>
+            )}
             {registrationChildren.length > 0 && (
               <>
                 <p className={`px-5 py-2.5 text-xs font-bold uppercase ${isLightHeader ? 'text-gray-600' : 'text-gray-500'}`}>관심고객등록</p>
@@ -1681,28 +1916,37 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
       </header>
 
       {/* Sub-visual - 배경 이미지 천천히 움직이는 애니메이션 */}
-      <div className="h-48 md:h-64 pt-28 relative overflow-hidden">
+      <div className="h-48 md:h-64 pt-28 relative overflow-hidden flex items-center">
         <div
           className="absolute inset-0 bg-cover bg-center animate-sub-visual-pan"
           style={{ backgroundImage: `url(${currentPage.subVisualImage})` }}
         />
         <div className="absolute inset-0 z-10 bg-black/50" />
+        {isVisitPage && (
+          <div className="relative z-20 px-6 md:px-12 text-white">
+            <b className="block text-sm md:text-base opacity-90">Perfect</b>
+            <span className="block text-2xl md:text-3xl font-black mt-1">방문예약신청</span>
+            <span className="block text-sm md:text-base mt-2 opacity-90">방문예약신청을 하시면 분양정보를 발빠르게 받아보실 수 있습니다.</span>
+          </div>
+        )}
       </div>
 
       {/* SNB + Content */}
       <div className={`flex flex-col md:flex-row max-w-6xl mx-auto ${isFreshHouse && openGnb ? 'mt-12' : ''}`}>
-        {slug !== 'premium-aurum' && (
+        {snbChildren.length > 0 && (
           <aside className="md:w-56 flex-shrink-0 px-4 py-8 md:py-12">
             <div className="sticky top-28 space-y-1">
-              <p className="text-xs font-bold text-gray-500 mb-4">{breadcrumbParent}</p>
+              <p className="text-xs font-bold mb-4" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{breadcrumbParent}</p>
               {snbChildren.map((c) => {
                 const pageId = (c as { pageId?: string }).pageId;
                 if (!pageId || !data.subPages?.some(sp => sp.pageId === pageId)) return null;
                 const isActive = subpageId === pageId;
                 return (
                   <Link key={c.label} to={subUrl(slug, pageId)}
-                    className={`block py-2.5 px-4 rounded-lg text-sm transition-colors ${isActive ? 'font-bold text-white' : 'text-gray-400 hover:text-white'}`}
-                    style={isActive ? { background: ac } : {}}>
+                    className={`block py-2.5 px-4 rounded-lg text-sm transition-colors ${isActive ? 'font-bold' : ''}`}
+                    style={{
+                      ...(isActive ? { background: ac, color: '#fff' } : { color: isLightTheme ? textSecondary : '#9ca3af' }),
+                    }}>
                     {c.label}
                   </Link>
                 );
@@ -1710,22 +1954,34 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
             </div>
           </aside>
         )}
-        <main className={`flex-1 min-w-0 ${slug === 'premium-aurum' ? '' : ''}`}>
-          {renderContent()}
+        <main className={`flex-1 min-w-0 ${slug === 'premium-forest' ? '' : ''}`}>
+          {isVisitPage && (() => {
+            const page = currentPage as { backgroundImage?: string };
+            const visitPage = data.subPages?.find(sp => sp.pageId === 'visit') as { backgroundImage?: string } | undefined;
+            const visitBg = page?.backgroundImage || visitPage?.backgroundImage || (data.registration && 'backgroundImage' in data.registration ? (data.registration as { backgroundImage?: string }).backgroundImage : undefined);
+            return visitBg ? (
+              <div className="flex flex-col md:flex-row min-h-[480px]">
+                <div className="hidden md:block md:w-[48%] flex-shrink-0 bg-cover bg-center" style={{ backgroundImage: `url(${visitBg})` }} />
+                <div className="flex-1 min-w-0 px-4 py-8 md:py-12">{renderContent()}</div>
+              </div>
+            ) : renderContent();
+          })()}
+          {!isVisitPage && renderContent()}
         </main>
       </div>
 
       {/* Footer */}
       <footer className="py-10 px-4 mt-12" style={{ background: altBg, borderTop: `1px solid ${borderC}` }}>
         <div className="max-w-6xl mx-auto">
-          <p className="font-bold text-white text-sm mb-3">{data.theme.footerText}</p>
-          {data.theme.footerInfo.developer && <p className="text-xs text-gray-500 mb-1">시행 시공 {data.theme.footerInfo.developer}</p>}
-          <p className="text-xs text-gray-500 mb-1">대표번호: {data.contactPhone}</p>
-          {data.theme.footerInfo.bizNumber && <p className="text-xs text-gray-500 mb-4">사업자등록번호: {data.theme.footerInfo.bizNumber}</p>}
-          {data.theme.disclaimer && <p className="text-[10px] text-gray-600 leading-relaxed text-center">{data.theme.disclaimer}</p>}
-          <p className="text-[11px] text-gray-600 mt-4 text-center">
+          <p className="font-bold text-sm mb-3" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{data.theme.footerText}</p>
+          {data.theme.footerInfo.developer && <p className="text-xs mb-1" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>시행 {data.theme.footerInfo.developer}</p>}
+          {data.theme.footerInfo.constructor && <p className="text-xs mb-1" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>시공 {data.theme.footerInfo.constructor}</p>}
+          <p className="text-xs mb-1" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>대표번호: {data.contactPhone}</p>
+          {data.theme.footerInfo.bizNumber && <p className="text-xs mb-4" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>사업자등록번호: {data.theme.footerInfo.bizNumber}</p>}
+          {data.theme.disclaimer && <p className="text-[10px] leading-relaxed text-center" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{data.theme.disclaimer}</p>}
+          <p className="text-[11px] mt-4 text-center" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
             본 페이지는 분양퍼스트에서 제작한 데모 템플릿입니다.{' '}
-            <Link to="/" className="underline hover:text-gray-400">분양퍼스트</Link>
+            <Link to="/" className="underline hover:opacity-80" style={{ color: 'inherit' }}>분양퍼스트</Link>
           </p>
         </div>
       </footer>
@@ -1735,16 +1991,19 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
         <button onClick={() => setShowModal(true)} className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl text-white" style={{ background: ac }} title="관심고객 등록">
           <UserPlus className="w-5 h-5 md:w-6 md:h-6" />
         </button>
-        <a href={`tel:${data.contactPhone}`} className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl text-white" style={{ background: cardBg, border: `1px solid ${borderC}` }} title="전화">
-          <Phone className="w-5 h-5 md:w-6 md:h-6" />
+        <a href={`tel:${data.contactPhone}`} className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl" style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} title="전화">
+          <Phone className="w-5 h-5 md:w-6 md:h-6" style={{ color: 'inherit' }} />
         </a>
-        <Link to={baseUrl(slug)} className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl text-white" style={{ background: cardBg, border: `1px solid ${borderC}` }} title="맨 위로">
-          <ChevronUp className="w-5 h-5 md:w-6 md:h-6" />
+        <a href="#" className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl bg-[#FEE500]" style={{ color: '#3c1e1e' }} title="카카오톡 상담">
+          <MessageCircle className="w-5 h-5 md:w-6 md:h-6" style={{ color: 'inherit' }} />
+        </a>
+        <Link to={baseUrl(slug)} className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl" style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} title="맨 위로">
+          <ChevronUp className="w-5 h-5 md:w-6 md:h-6" style={{ color: 'inherit' }} />
         </Link>
       </div>
 
       <div className="fixed bottom-3 left-3 z-50">
-        <Link to="/samples" className="inline-block px-3 py-2 text-white text-[11px] rounded-lg" style={{ background: cardBg, border: `1px solid ${borderC}` }}>
+        <Link to="/samples" className="inline-block px-3 py-2 text-[11px] rounded-lg" style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }}>
           샘플 목록으로
         </Link>
       </div>
@@ -1764,19 +2023,19 @@ export default function PremiumSubLayout({ data, slug, subpageId }: Props) {
               {submitted ? (
                 <div className="text-center py-10">
                   <div className="text-4xl mb-4">&#10003;</div>
-                  <h3 className="text-xl font-bold text-white">등록 완료</h3>
+                  <h3 className="text-xl font-bold" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>등록 완료</h3>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <input type="text" placeholder="이름 *" value={formName} onChange={(e) => setFormName(e.target.value)} required
-                    className="w-full h-12 px-4 rounded-lg text-white placeholder-gray-500 focus:outline-none"
-                    style={{ background: cardBg, border: `1px solid ${borderC}` }} />
+                    className="w-full h-12 px-4 rounded-lg placeholder-gray-500 focus:outline-none"
+                    style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} />
                   <input type="tel" placeholder="휴대폰 *" value={formPhone} onChange={(e) => setFormPhone(e.target.value)} required
-                    className="w-full h-12 px-4 rounded-lg text-white placeholder-gray-500 focus:outline-none"
-                    style={{ background: cardBg, border: `1px solid ${borderC}` }} />
+                    className="w-full h-12 px-4 rounded-lg placeholder-gray-500 focus:outline-none"
+                    style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} />
                   <label className="flex items-start gap-2 cursor-pointer">
                     <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 rounded" />
-                    <span className="text-sm text-gray-400"><span className="underline">개인정보처리방침</span>에 동의합니다 *</span>
+                    <span className="text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}><span className="underline">개인정보처리방침</span>에 동의합니다 *</span>
                   </label>
                   <button type="submit" disabled={!agreed}
                     className="w-full h-14 font-bold rounded-xl text-white disabled:opacity-50"

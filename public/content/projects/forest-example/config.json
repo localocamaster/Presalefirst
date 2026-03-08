@@ -1,0 +1,89 @@
+{
+  "projectId": "forest-example",
+  "templateId": "premium-forest",
+  "projectName": "더포레스트",
+  "projectNameEn": "THE FOREST",
+  "brandLine": "자연친화 힐링라이프 더포레스트",
+  "contactPhone": "0000-0000",
+
+  "imageBasePath": "/images/demo/forest",
+
+  "hero": {
+    "slides": [
+      {
+        "image": "main01.jpg",
+        "title": ["자연친화 힐링라이프", "더포레스트"],
+        "subtitle": "경기도 광주 곤지암에 위치한 3,000세대 대단지 랜드마크"
+      },
+      {
+        "image": "main02.jpg",
+        "title": ["THE", "FOREST"],
+        "subtitle": "힐링으로 가득한 일상\n푸르른 자연으로 재충전의 시간을 선사하는\n4계절 힐링 에코라이프"
+      },
+      {
+        "image": "main03.jpg",
+        "title": ["THE", "FOREST"],
+        "subtitle": "다채롭고 편리한 생활\n프리미엄 생활권과 완벽한 인프라"
+      }
+    ]
+  },
+
+  "overview": {
+    "title": "사업개요",
+    "subtitle": "경기도 광주 더포레스트",
+    "image": "section05_1.jpg",
+    "items": [
+      { "label": "위치", "value": "경기도 광주시 곤지암읍 곤지암리 산 4-3" },
+      { "label": "규모", "value": "총 3,000세대" },
+      { "label": "타입", "value": "59㎡ / 84A㎡ / 114㎡" },
+      { "label": "시행", "value": "더 포레스트" },
+      { "label": "위탁/분양", "value": "더포레스트" },
+      { "label": "시공", "value": "더 포레스트" }
+    ]
+  },
+
+  "premium": {
+    "title": "더포레스트",
+    "subtitle": "PREMIUM 7",
+    "features": [
+      { "image": "luxury1.jpg", "number": "01", "title": "괘적한 자연환경", "description": "공원을 앞마당처럼 누리는 힐링라이프" },
+      { "image": "luxury2.jpg", "number": "02", "title": "3,000세대 대단지 랜드마크", "description": "주거문화를 대표하며 총 3,000세대 랜드마크 대단지" },
+      { "image": "luxury3.jpg", "number": "03", "title": "초중고 안심학군", "description": "도보 통학이 가능한 공립유치원, 초/중/고 안심학군" },
+      { "image": "luxury4.jpg", "number": "04", "title": "교통 역세권", "description": "지하철,버스정류장 3분거리 위치의 역세권" },
+      { "image": "luxury5.jpg", "number": "05", "title": "프리미엄 생활권", "description": "법원 등 관공서 및 중심상권 인접 메인 인프라를 갖춘 중심 생활권" },
+      { "image": "luxury6.jpg", "number": "06", "title": "커뮤니티 시설", "description": "피트니스클럽, 실내골프연습장, 쾌적한 힐링을 누리는 에코라이프" },
+      { "image": "premium07.png", "number": "07", "title": "브랜드 프리미엄", "description": "대한민국 대표 빛나는 아파트 자부심" }
+    ]
+  },
+
+  "map": {
+    "modelHouseAddress": "경기도 광주시 수송로 291 (마장동)",
+    "siteAddress": "경기도 광주시 지삼로 275 (지곡동)",
+    "modelHouseImage": "section05_1.jpg",
+    "siteImage": "section05_1.jpg"
+  },
+
+  "registration": {
+    "title": "방문예약신청",
+    "subtitle": "방문예약신청을 하시면 분양정보를 발빠르게 받아보실 수 있습니다.",
+    "backgroundImage": "visual_01.jpg"
+  },
+
+  "videos": {
+    "items": [
+      { "videoId": "_gLWz7BDLbg", "thumbnail": "/images/demo/aurum/2898761362a2d.jpg", "type": "youtube" },
+      { "videoId": "o9AwMsGV72M", "thumbnail": "/images/demo/aurum/78c53d731b1c0.jpg", "type": "youtube" }
+    ]
+  },
+
+  "theme": {
+    "primary": "#c89c52",
+    "accent": "#c89c52",
+    "footerText": "더포레스트",
+    "footerInfo": {
+      "developer": "더 포레스트",
+      "constructor": "더 포레스트",
+      "bizNumber": "000-00-00000"
+    }
+  }
+}

@@ -100,7 +100,7 @@ export interface PremiumLocationSubPage {
   contentSubtitle?: string;
   contentDesc?: string;
   mainImage: string;
-  poiGroups?: { category: string; title: string; items: string[]; image: string }[];
+  poiGroups?: { category: string; title: string; items: string[]; image: string; icon?: string }[];
   caution?: string[];
 }
 
@@ -141,6 +141,8 @@ export interface PremiumComplexCommunitySubPage {
   subtitle: string;
   subVisualImage: string;
   caption?: string;
+  contentTitle?: string;
+  contentDesc?: string;
   mainImage: string;
   mobileImage?: string;
   caution?: string[];
@@ -257,7 +259,11 @@ export interface PremiumNewsSubPage {
   title: string;
   subtitle: string;
   subVisualImage: string;
-  items: { number?: number; title: string; source: string; date: string; url: string }[];
+  /** 대표 기사 이미지 (topNews) */
+  featuredImage?: string;
+  /** 좌측 배경 이미지 (customer-bg 레이아웃) */
+  backgroundImage?: string;
+  items: { number?: number; title: string; source: string; date: string; url: string; summary?: string }[];
 }
 
 /** 홍보센터 서브페이지 - 공지사항 (목록형) */
@@ -278,6 +284,8 @@ export interface PremiumDocumentSubPage {
   subtitle: string;
   subVisualImage: string;
   image: string;
+  /** 좌측 배경 이미지 (customer-bg 레이아웃) */
+  backgroundImage?: string;
   caution?: string[];
 }
 
@@ -300,6 +308,10 @@ export interface PremiumRegistrationSubPage {
   subtitle: string;
   subVisualImage: string;
   unitTypes: string[]; // 관심평형 옵션 (예: ['59㎡', '84㎡', '114㎡'])
+  /** 방문예약 단순 폼: 이름, 연락처, 성별, 나이, 동의만 */
+  formVariant?: 'simple' | 'full';
+  /** 좌측 배경 이미지 (customer-bg 레이아웃) */
+  backgroundImage?: string;
   caution?: string[];
 }
 
@@ -388,6 +400,7 @@ export interface PremiumTemplateData {
   registration: {
     title: string;
     subtitle: string;
+    backgroundImage?: string;
   };
 
   brand?: {

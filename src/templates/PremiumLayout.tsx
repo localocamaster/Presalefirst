@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Phone, MessageCircle, X, Menu, UserPlus,
   ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
-  MapPin, Play,
+  MapPin,
 } from 'lucide-react';
 import type { PremiumTemplateData } from './premiumTypes';
 
@@ -25,8 +25,10 @@ export default function PremiumLayout({ data, slug }: Props) {
   const [communityIdx, setCommunityIdx] = useState(0);
   const [featureIdx, setFeatureIdx] = useState(0);
   const [unitIdx, setUnitIdx] = useState(0);
-  const [videoPlaying, setVideoPlaying] = useState<{ [key: string]: boolean }>({});
-  const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>({});
+  const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>({
+    brand: true,
+    overview: true,
+  });
   const heroVideoRef = useRef<HTMLIFrameElement>(null);
 
   const [formName, setFormName] = useState('');
@@ -201,21 +203,46 @@ export default function PremiumLayout({ data, slug }: Props) {
 
               <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
                 {data.navItems.map((item) => {
-                  // aurum 프로젝트는 드롭다운 없이 바로 서브페이지로 이동
-                  if (slug === 'premium-aurum' && item.children && item.children.length > 0) {
-                    const firstChild = item.children[0];
-                    const pageId = (firstChild as { pageId?: string }).pageId;
-                    if (pageId && data.subPages?.some(sp => sp.pageId === pageId)) {
-                      return (
-                        <Link
-                          key={item.label}
-                          to={`/demo/${slug}/${pageId}`}
-                          className={`px-5 xl:px-6 py-3 text-lg xl:text-xl font-medium transition-colors block ${isLightHeader ? 'text-gray-700 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
-                        >
+                  // pageId가 있는 children이 있으면 드롭다운 표시 (premium-forest 포함)
+                  const hasSubPages = item.children?.some(c => (c as { pageId?: string }).pageId && data.subPages?.some(sp => sp.pageId === (c as { pageId?: string }).pageId));
+                  if (hasSubPages && slug) {
+                    return (
+                      <div
+                        key={item.label}
+                        className="relative"
+                        onMouseEnter={() => item.children && setOpenDropdown(item.label)}
+                        onMouseLeave={() => setOpenDropdown(null)}
+                      >
+                        <Link to={item.href.startsWith('#') ? `/demo/${slug}` : item.href} className={`px-5 xl:px-6 py-3 text-lg xl:text-xl font-medium transition-colors flex items-center gap-1 ${isLightHeader ? 'text-gray-700 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}>
                           {item.label}
+                          <ChevronDown className="w-5 h-5" />
                         </Link>
-                      );
-                    }
+                        {item.children && item.children.length > 0 && openDropdown === item.label && (
+                          <div
+                            className="absolute top-full left-0 pt-1 min-w-[160px] py-2 rounded-b-lg z-50"
+                            style={{ background: hdrScrollBg, border: `1px solid ${borderC}`, borderTop: 'none' }}
+                          >
+                            <div className="flex flex-col">
+                              {item.children.map((child) => {
+                                const pageId = (child as { pageId?: string }).pageId;
+                                if (pageId && slug && data.subPages?.some(sp => sp.pageId === pageId)) {
+                                  return (
+                                    <Link key={child.label} to={`/demo/${slug}/${pageId}`} className={`block w-full text-left px-8 py-2.5 text-[15px] transition-colors ${isLightHeader ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+                                      {child.label}
+                                    </Link>
+                                  );
+                                }
+                                return (
+                                  <button key={child.label} onClick={() => scrollTo((child as { href?: string }).href ?? '#')} className={`block w-full text-left px-8 py-2.5 text-[15px] transition-colors ${isLightHeader ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}>
+                                    {child.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
                   }
                   
                   // 기존 드롭다운 로직 (다른 프로젝트용)
@@ -223,10 +250,10 @@ export default function PremiumLayout({ data, slug }: Props) {
                     <div
                       key={item.label}
                       className="relative"
-                      onMouseEnter={() => item.children && slug !== 'premium-aurum' && setOpenDropdown(item.label)}
-                      onMouseLeave={() => slug !== 'premium-aurum' && setOpenDropdown(null)}
+                      onMouseEnter={() => item.children && setOpenDropdown(item.label)}
+                      onMouseLeave={() => setOpenDropdown(null)}
                     >
-                      {item.children?.some(c => (c as { pageId?: string }).pageId) && slug && slug !== 'premium-aurum' ? (
+                      {item.children?.some(c => (c as { pageId?: string }).pageId) && slug ? (
                         <Link to={item.href.startsWith('#') ? `/demo/${slug}` : item.href} className={`px-5 xl:px-6 py-3 text-lg xl:text-xl font-medium transition-colors flex items-center gap-1 ${isLightHeader ? 'text-gray-700 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}>
                           {item.label}
                           <ChevronDown className="w-5 h-5" />
@@ -237,10 +264,10 @@ export default function PremiumLayout({ data, slug }: Props) {
                           className={`px-5 xl:px-6 py-3 text-lg xl:text-xl font-medium transition-colors flex items-center gap-1 ${isLightHeader ? 'text-gray-700 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
                         >
                           {item.label}
-                          {item.children && slug !== 'premium-aurum' && <ChevronDown className="w-5 h-5" />}
+                          {item.children && slug !== 'premium-forest' && <ChevronDown className="w-5 h-5" />}
                         </button>
                       )}
-                      {item.children && item.children.length > 0 && openDropdown === item.label && slug !== 'premium-aurum' && (
+                      {item.children && item.children.length > 0 && openDropdown === item.label && (
                         <div
                           className="absolute top-full left-0 pt-1 min-w-[160px] py-2 rounded-b-lg z-50"
                           style={{ background: hdrScrollBg, border: `1px solid ${borderC}`, borderTop: 'none' }}
@@ -437,151 +464,17 @@ export default function PremiumLayout({ data, slug }: Props) {
             관심고객 등록
           </button>
         </div>
-        {data.hero.slides.length > 1 && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-            {data.hero.slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setHeroIdx(i)}
-                className="h-1 rounded-full transition-all duration-500"
-                style={{
-                  width: heroIdx === i ? 32 : 16,
-                  background: heroIdx === i ? ac : 'rgba(255,255,255,0.4)',
-                }}
-              />
-            ))}
+        {slug !== 'premium-forest' && (
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+            <ChevronDown className="w-6 h-6 text-white/50" />
           </div>
         )}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-          <ChevronDown className="w-6 h-6 text-white/50" />
-        </div>
       </section>
-
-      {/* ── Brand Introduction ── */}
-      {data.brand && (
-        <section 
-          id="brand" 
-          className={`py-20 md:py-28 transition-all duration-1000 ${
-            isVisible.brand ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-          style={{ background: altBg }}
-        >
-          <div className="max-w-6xl mx-auto px-4">
-            {data.brand.image && (
-              <div className="mb-12 text-center">
-                <img 
-                  src={data.brand.image} 
-                  alt="브랜드 소개" 
-                  className="mx-auto max-w-4xl w-full object-contain transition-transform duration-700 hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-            )}
-            {data.brand.content && (
-              <div className="max-w-4xl mx-auto text-center space-y-6">
-                {data.brand.content.split('\n\n').map((paragraph, i) => (
-                  <p 
-                    key={i}
-                    className={`text-base md:text-lg lg:text-xl leading-relaxed transition-all duration-700 ${
-                      isVisible[`brand-p-${i}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                    }`}
-                    style={{ 
-                      transitionDelay: `${i * 200}ms`,
-                      color: isLightTheme ? textPrimary : 'rgba(255,255,255,0.9)'
-                    }}
-                    id={`brand-p-${i}`}
-                  >
-                    {paragraph.split('\n').map((line, j) => (
-                      <span key={j}>
-                        {line}
-                        {j < paragraph.split('\n').length - 1 && <br />}
-                      </span>
-                    ))}
-                  </p>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* ── Videos ── */}
-      {data.videos && data.videos.items.length > 0 && (
-        <section 
-          id="videos" 
-          className={`py-20 md:py-28 transition-all duration-1000 ${
-            isVisible.videos ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-          style={{ background: baseBg }}
-        >
-          <div className="max-w-6xl mx-auto px-4">
-            {data.videos.title && (
-              <div className="text-center mb-12">
-                <span className="text-xs font-bold tracking-[0.3em] uppercase" style={{ color: ac }}>
-                  VIDEO
-                </span>
-                <h2 className="mt-3 text-2xl md:text-4xl font-black" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{data.videos.title}</h2>
-                {data.videos.subtitle && (
-                  <p className="mt-3 text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{data.videos.subtitle}</p>
-                )}
-              </div>
-            )}
-            <div className="grid md:grid-cols-2 gap-8">
-              {data.videos.items.map((video, i) => (
-                <div
-                  key={i}
-                  className={`group relative rounded-2xl overflow-hidden transition-all duration-700 hover:shadow-2xl ${
-                    isVisible[`video-${i}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                  }`}
-                  style={{ 
-                    border: `1px solid ${borderC}`,
-                    transitionDelay: `${i * 150}ms`,
-                  }}
-                  id={`video-${i}`}
-                >
-                  {videoPlaying[video.videoId] ? (
-                    <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                      <iframe
-                        src={
-                          video.type === 'youtube'
-                            ? `https://www.youtube.com/embed/${video.videoId}?autoplay=1&rel=0&controls=1&modestbranding=1`
-                            : `https://player.vimeo.com/video/${video.videoId}?autoplay=1`
-                        }
-                        className="absolute inset-0 w-full h-full"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        allowFullScreen
-                      />
-                    </div>
-                  ) : (
-                    <div
-                      className="relative cursor-pointer overflow-hidden"
-                      style={{ paddingBottom: '56.25%' }}
-                      onClick={() => setVideoPlaying(prev => ({ ...prev, [video.videoId]: true }))}
-                    >
-                      <img
-                        src={video.thumbnail}
-                        alt={video.title || '동영상'}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-125"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
-                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-125 group-hover:shadow-2xl" style={{ background: ac }}>
-                          <Play className="w-10 h-10 md:w-12 md:h-12 text-white ml-1" fill="white" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ── Overview ── */}
       <section 
         id="overview" 
-        className={`py-20 md:py-28 transition-all duration-1000 ${
+        className={`${slug === 'premium-forest' ? 'pt-20 md:pt-28 pb-20 md:pb-28' : 'py-20 md:py-28'} transition-all duration-1000 ${
           isVisible.overview ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
         style={{ background: baseBg }}
@@ -603,8 +496,8 @@ export default function PremiumLayout({ data, slug }: Props) {
             <div className="grid grid-cols-2 gap-4">
               {data.overview.items.map((item, i) => (
                 <div key={i} className="rounded-xl p-4 md:p-5" style={{ background: cardBg, border: `1px solid ${borderC}` }}>
-                  <p className="text-[11px] text-gray-500 font-medium mb-1">{item.label}</p>
-                  <p className="text-sm md:text-base font-bold text-white">{item.value}</p>
+                  <p className="text-[11px] font-medium mb-1" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{item.label}</p>
+                  <p className="text-sm md:text-base font-bold" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{item.value}</p>
                 </div>
               ))}
             </div>
@@ -927,12 +820,28 @@ export default function PremiumLayout({ data, slug }: Props) {
       </section>
 
       {/* ── Registration Inline ── */}
-      <section id="registration" className="py-20 md:py-28" style={{ background: altBg }}>
-        <div className="max-w-lg mx-auto px-4">
+      {(() => {
+        const regHasDarkBg = !!data.registration.backgroundImage;
+        const regTitleColor = regHasDarkBg ? '#ffffff' : (isLightTheme ? textPrimary : '#ffffff');
+        const regSubColor = regHasDarkBg ? 'rgba(255,255,255,0.9)' : (isLightTheme ? textSecondary : '#9ca3af');
+        return (
+      <section 
+        id="registration" 
+        className="py-20 md:py-28 relative"
+        style={{ 
+          background: data.registration.backgroundImage 
+            ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${data.registration.backgroundImage})`
+            : altBg,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="max-w-lg mx-auto px-4 relative z-10">
           <div className="text-center mb-10">
             <span className="text-xs font-bold tracking-[0.3em] uppercase" style={{ color: ac }}>REGISTRATION</span>
-            <h2 className="mt-3 text-2xl md:text-3xl font-black" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{data.registration.title}</h2>
-            <p className="mt-3 text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>{data.registration.subtitle}</p>
+            <h2 className="mt-3 text-2xl md:text-3xl font-black" style={{ color: regTitleColor }}>{data.registration.title}</h2>
+            <p className="mt-3 text-sm" style={{ color: regSubColor }}>{data.registration.subtitle}</p>
           </div>
           {submitted ? (
             <div className="text-center py-12 rounded-2xl" style={{ background: cardBg, border: `1px solid ${borderC}` }}>
@@ -950,7 +859,7 @@ export default function PremiumLayout({ data, slug }: Props) {
                 style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} />
               <label className="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 rounded" />
-                <span className="text-sm" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>
+                <span className="text-sm" style={{ color: regSubColor }}>
                   <span className="underline">이용약관</span> 및 <span className="underline">개인정보처리방침</span>에 동의합니다 *
                 </span>
               </label>
@@ -963,6 +872,8 @@ export default function PremiumLayout({ data, slug }: Props) {
           )}
         </div>
       </section>
+        );
+      })()}
 
       {/* ── Footer ── */}
       <footer className="py-10 px-4" style={{ background: baseBg, borderTop: `1px solid ${borderC}` }}>
@@ -970,13 +881,14 @@ export default function PremiumLayout({ data, slug }: Props) {
           <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 mb-8">
             <div className="text-left">
               <p className="font-bold text-sm mb-3 tracking-wider" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>{data.theme.footerText}</p>
-              {data.theme.footerInfo.developer && <p className="text-xs mb-1" style={{ color: isLightTheme ? textSecondary : '#6b7280' }}>시행 시공 {data.theme.footerInfo.developer}</p>}
+              {data.theme.footerInfo.developer && <p className="text-xs mb-1" style={{ color: isLightTheme ? textSecondary : '#6b7280' }}>시행 {data.theme.footerInfo.developer}</p>}
+              {data.theme.footerInfo.constructor && <p className="text-xs mb-1" style={{ color: isLightTheme ? textSecondary : '#6b7280' }}>시공 {data.theme.footerInfo.constructor}</p>}
               {data.theme.footerInfo.trustee && <p className="text-xs text-gray-500 mb-1">위탁 | {data.theme.footerInfo.trustee}</p>}
             </div>
             <div className="text-right">
-              <p className="font-bold text-white text-sm mb-3">연락처</p>
-              <p className="text-xs text-gray-500 mb-1">대표번호: {data.contactPhone}</p>
-              {data.theme.footerInfo.bizNumber && <p className="text-xs text-gray-500">사업자등록번호: {data.theme.footerInfo.bizNumber}</p>}
+              <p className="font-bold text-sm mb-3" style={{ color: isLightTheme ? textPrimary : '#ffffff' }}>연락처</p>
+              <p className="text-xs mb-1" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>대표번호: {data.contactPhone}</p>
+              {data.theme.footerInfo.bizNumber && <p className="text-xs" style={{ color: isLightTheme ? textSecondary : '#9ca3af' }}>사업자등록번호: {data.theme.footerInfo.bizNumber}</p>}
             </div>
           </div>
           {data.theme.disclaimer && (
@@ -1000,17 +912,17 @@ export default function PremiumLayout({ data, slug }: Props) {
             <UserPlus className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <a href={`tel:${data.contactPhone}`}
-            className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl text-white hover:scale-110 transition-all"
-            style={{ background: cardBg, border: `1px solid ${borderC}` }} title="전화 상담">
-            <Phone className="w-5 h-5 md:w-6 md:h-6" />
+            className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl hover:scale-110 transition-all"
+            style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} title="전화 상담">
+            <Phone className="w-5 h-5 md:w-6 md:h-6" style={{ color: 'inherit' }} />
           </a>
-          <button className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl bg-[#FEE500] text-[#3c1e1e]" title="카카오톡 상담">
-            <MessageCircle className="w-5 h-5 md:w-7 md:h-7" />
-          </button>
+          <a href="#" className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl bg-[#FEE500] hover:scale-110 transition-all" style={{ color: '#3c1e1e' }} title="카카오톡 상담">
+            <MessageCircle className="w-5 h-5 md:w-7 md:h-7" style={{ color: 'inherit' }} />
+          </a>
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl text-white hover:opacity-80 transition-all"
-            style={{ background: cardBg, border: `1px solid ${borderC}` }} title="맨 위로">
-            <ChevronUp className="w-5 h-5 md:w-6 md:h-6" />
+            className="flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full shadow-2xl hover:opacity-80 transition-all"
+            style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }} title="맨 위로">
+            <ChevronUp className="w-5 h-5 md:w-6 md:h-6" style={{ color: 'inherit' }} />
           </button>
         </div>
       )}
@@ -1018,8 +930,8 @@ export default function PremiumLayout({ data, slug }: Props) {
       {/* ── Back to Samples ── */}
       <div className="fixed bottom-3 md:bottom-4 left-3 md:left-4 z-50">
         <Link to="/samples"
-          className="inline-block px-3 md:px-4 py-1.5 md:py-2 text-white text-[11px] md:text-sm rounded-lg hover:opacity-80 transition-colors backdrop-blur-sm"
-          style={{ background: cardBg, border: `1px solid ${borderC}` }}>
+          className="inline-block px-3 md:px-4 py-1.5 md:py-2 text-[11px] md:text-sm rounded-lg hover:opacity-80 transition-colors backdrop-blur-sm"
+          style={{ background: cardBg, border: `1px solid ${borderC}`, color: isLightTheme ? textPrimary : '#ffffff' }}>
           샘플 목록으로
         </Link>
       </div>

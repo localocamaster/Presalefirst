@@ -5,7 +5,6 @@ import * as admin from "firebase-admin";
 import * as nodemailer from "nodemailer";
 import * as dotenv from "dotenv";
 import { validateInquiryPayload } from "./utils/validation";
-import { sendInquiryConfirmationSms } from "./services/smsService";
 import { SmtpConfigError } from "./errors/inquiryErrors";
 import { logError } from "./utils/logger";
 
@@ -153,9 +152,6 @@ export const sendInquiryEmail = functions.https.onRequest(async (req, res) => {
       `,
       });
     }
-
-    // 3) 고객에게 접수 확인 문자 발송
-    await sendInquiryConfirmationSms(phone, name);
 
     await db.collection("inquiries").add({
       name,

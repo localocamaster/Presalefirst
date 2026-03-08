@@ -1,0 +1,16 @@
+{
+  "projects": [
+    {
+      "projectId": "forest-example",
+      "templateId": "premium-forest",
+      "projectName": "더포레스트",
+      "enabled": true
+    },
+    {
+      "projectId": "zenith-example",
+      "templateId": "zenith",
+      "projectName": "강남 푸르지오 시그니처",
+      "enabled": true
+    }
+  ]
+}
