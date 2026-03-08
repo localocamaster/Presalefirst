@@ -42,14 +42,14 @@ const painPoints = [
   { num: '01', title: '"홈페이지 있어요?" 물어볼 때마다 당황스럽다', desc: '고객이 그 질문을 할 때 식은땀이 흘러요.\n명함은 있는데 홈페이지가 없으니 전문성이 없어 보입니다.' },
   { num: '02', title: '직접 만들려니 어렵고, 외주는 너무 비싸다', desc: '견적을 받아보면 수백만 원.\n막 시작한 분양상담사에게는 부담이 너무 큽니다.' },
   { num: '03', title: '영업에 집중해야 하는데 홈페이지까지 신경 쓸 여력이 없다', desc: '고객 관리, 현장 투어, 계약 준비...\n홈페이지 만들 시간이 없습니다.' },
-  { num: '04', title: '광고를 돌리는데 부정클릭으로 광고비가 새고 있다', desc: '실제 고객인지 봇인지 구분할 방법이 없어\n광고비가 어디로 새는지 모릅니다.' },
+  { num: '04', title: '만들어 봤는데 광고에 쓸 수가 없다', desc: '네이버 파워링크 심사를 통과하려면\n조건에 맞는 홈페이지가 필요한데, 일반 빌더로는 한계가 있습니다.' },
 ];
 
 const solutions = [
   { title: '분양에 특화된 기능', desc: '전화·카톡 상담, 관심고객 접수, 유튜브 영상, 팝업까지\n분양상담사에게 꼭 필요한 기능만 담았습니다.' },
   { title: '합리적인 비용', desc: '외주 대비 1/10 수준의 비용.\n한 번 결제로 홈페이지를 바로 제작해드립니다.' },
   { title: '빠른 제작 완료', desc: '신청 후 최대 24시간 내 완료.\n급행으로 6시간 이내 제작도\n가능합니다.' },
-  { title: '부정클릭 & 접속통계', desc: '시중에서 월 2~3만원짜리 서비스를 프리미엄에 기본 포함.\n광고비를 낭비 없이 운영하세요.' },
+  { title: '접속통계', desc: '일별/주별/월별 접속통계와 유입 경로 분석을\n프리미엄 플랜에 기본 포함했습니다.' },
 ];
 
 const samples = [
@@ -66,23 +66,23 @@ const steps = [
   { num: '05', title: '홈페이지 세팅', desc: '1차 세팅 완료' },
   { num: '06', title: '홈페이지 제작', desc: '디자인 대행 요청시 24시간 소요' },
   { num: '07', title: '기타서비스', desc: '무료 도메인 연결, 검색엔진 최적화 설정' },
-  { num: '08', title: '마케팅서비스', desc: '키워드광고, 배너광고,\n부정클릭 방지, 콜백서비스' },
+  { num: '08', title: '마케팅서비스', desc: '키워드광고, 배너광고,\n콜백서비스' },
 ];
 
 const plans = [
   {
     name: '베이직', price: '19만원', desc: '핵심 기능만 담은 시작 플랜', recommended: false,
     features: ['전화 상담 버튼', '카톡 상담 연결', '유튜브 영상 (최대 2개)', '오시는 길 + 약도 전송', '팝업 (최대 10개)', '파비콘', '호스팅 무료 지원', '기본 도메인 무료', '네이버 파워링크 조건 충족'],
-    disabled: ['관심고객 관리', '접속통계', '부정클릭 차단'],
+    disabled: ['관심고객 관리', '접속통계'],
   },
   {
     name: '디럭스', price: '24만원', desc: '관심고객 관리까지 한 번에', recommended: true,
     features: ['전화 상담 버튼', '카톡 상담 연결', '유튜브 영상 (최대 2개)', '오시는 길 + 약도 전송', '팝업 (최대 10개)', '파비콘', '호스팅 무료 지원', '기본 도메인 무료', '네이버 파워링크 조건 충족', '관심고객 관리'],
-    disabled: ['접속통계', '부정클릭 차단'],
+    disabled: ['접속통계'],
   },
   {
     name: '프리미엄', price: '29만원', desc: '광고 효율까지 잡는 올인원', recommended: false,
-    features: ['전화 상담 버튼', '카톡 상담 연결', '유튜브 영상 (최대 2개)', '오시는 길 + 약도 전송', '팝업 (최대 10개)', '파비콘', '호스팅 무료 지원', '기본 도메인 무료', '네이버 파워링크 조건 충족', '관심고객 관리', '접속통계', '부정클릭 차단'],
+    features: ['전화 상담 버튼', '카톡 상담 연결', '유튜브 영상 (최대 2개)', '오시는 길 + 약도 전송', '팝업 (최대 10개)', '파비콘', '호스팅 무료 지원', '기본 도메인 무료', '네이버 파워링크 조건 충족', '관심고객 관리', '접속통계'],
     disabled: [],
   },
 ];
@@ -253,7 +253,7 @@ export default function Home() {
       <section className="py-12 sm:py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <SectionTitle subtitle="공감되시나요?" title="이런 상황, 혹시 익숙하신가요?" />
-          <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             {painPoints.map((p) => (
               <div key={p.num} className="group p-5 sm:p-8 rounded-xl sm:rounded-2xl bg-white border border-gray-100 hover:border-red-200 hover:shadow-lg transition-all duration-300">
                 <div className="flex items-start gap-4 sm:gap-6">
