@@ -17,9 +17,15 @@ export function getOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': `${SITE_URL}/#organization`,
     name: '분양퍼스트',
     alternateName: SITE_NAME,
     url: SITE_URL,
+    foundingDate: '2007',
+    numberOfEmployees: {
+      '@type': 'QuantitativeValue',
+      value: 20,
+    },
     logo: {
       '@type': 'ImageObject',
       url: OG_IMAGE,
@@ -34,12 +40,28 @@ export function getOrganizationSchema() {
       email: 'localoca.master@gmail.com',
       areaServed: 'KR',
       availableLanguage: 'Korean',
-      hoursAvailable: {
+    },
+    openingHoursSpecification: [
+      {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         opens: '09:00',
         closes: '18:00',
       },
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Saturday'],
+        opens: '09:00',
+        closes: '13:00',
+      },
+    ],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '인하로 100 인하대학교 인하드림센터 1관 206에이호',
+      addressLocality: '인천광역시',
+      addressRegion: '미추홀구',
+      postalCode: '22212',
+      addressCountry: 'KR',
     },
   };
 }
@@ -49,20 +71,24 @@ export function getWebSiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': `${SITE_URL}/#website`,
     name: SITE_NAME,
     url: SITE_URL,
     description: '분양 홈페이지 제작 전문. 19만원부터 24시간 내 제작. 분양상담사를 위한 홈페이지 솔루션.',
     publisher: {
       '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
       name: '분양퍼스트',
-      logo: {
-        '@type': 'ImageObject',
-        url: OG_IMAGE,
-        width: 1200,
-        height: 630,
-      },
     },
     inLanguage: 'ko-KR',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
   };
 }
 
@@ -173,6 +199,56 @@ export function getBlogSchema() {
       { name: '블로그', path: '/blog' },
     ],
   });
+}
+
+/** 홈 페이지 전용 FAQPage 스키마 - SERP 리치 결과 (People Also Ask) */
+export function getHomeFAQSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '분양 홈페이지 제작 비용은 얼마인가요?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: '분양퍼스트의 홈페이지 제작 비용은 베이직 19만원, 디럭스 24만원, 프리미엄 29만원으로 구성되어 있습니다. 구독 없이 1회 결제로 제작이 완료되며, 기본 1년 사용이 포함됩니다.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '분양 홈페이지 제작 기간은 얼마나 걸리나요?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: '신청 후 최대 24시간 내에 홈페이지 제작이 완료됩니다. 급행 옵션(+5만원)을 선택하시면 6시간 이내로도 제작 가능합니다.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '네이버 파워링크 광고에 사용할 수 있나요?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: '네, 분양퍼스트에서 제작한 홈페이지는 네이버 파워링크 심사 조건을 충족하도록 설계되어 있습니다. 전화번호, 사업자 정보, 오시는 길 등 심사에 필요한 필수 항목이 기본 포함됩니다.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '분양이 완료된 후 홈페이지는 어떻게 되나요?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: '기본 사용 기간은 1년이며, 분양이 아직 진행 중이라면 만료 전에 연락주시면 무료로 연장해드립니다. 카카오톡으로 만료 전 미리 안내해 드립니다.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '분양 홈페이지에서 고객 정보를 직접 관리할 수 있나요?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: '디럭스 플랜 이상부터 관심고객 관리 기능이 포함됩니다. 홈페이지를 통해 접수된 상담 신청자 정보를 관리 시스템에서 확인하실 수 있습니다.',
+        },
+      },
+    ],
+  };
 }
 
 /** FAQPage 스키마 */

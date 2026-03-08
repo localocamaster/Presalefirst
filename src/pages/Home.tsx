@@ -7,7 +7,7 @@ import {
 import SectionTitle from '../components/SectionTitle';
 import PreviewModal from '../components/PreviewModal';
 import SeoHead from '../components/SeoHead';
-import { getOrganizationSchema, getWebSiteSchema, getWebPageSchema } from '../utils/schema';
+import { getOrganizationSchema, getWebSiteSchema, getWebPageSchema, getHomeFAQSchema } from '../utils/schema';
 import { submitInquiry } from '../api/inquiry';
 
 const heroSlides = [
@@ -139,6 +139,7 @@ export default function Home() {
             path: '/',
             breadcrumbs: [{ name: '홈', path: '/' }],
           }),
+          getHomeFAQSchema(),
         ]}
       />
       {/* Hero Slider */}

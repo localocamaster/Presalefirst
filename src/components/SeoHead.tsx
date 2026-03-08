@@ -59,6 +59,7 @@ export default function SeoHead({ title, description, path = '', exactTitle, sch
     setMeta('og:image:width', '1200', true);
     setMeta('og:image:height', '630', true);
     setMeta('og:image:type', 'image/png', true);
+    setMeta('og:image:alt', `${SITE_NAME} - 분양 홈페이지 제작 전문`, true);
     setMeta('twitter:card', 'summary_large_image');
     setMeta('twitter:image', OG_IMAGE);
     setMeta('twitter:title', fullTitle);
