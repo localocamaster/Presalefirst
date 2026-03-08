@@ -20,7 +20,7 @@ export default function SeoHead({ title, description, path = '', exactTitle, sch
   const fullTitle = exactTitle
     ? title
     : isHome
-      ? '분양웹사이트제작 분양홍보 홈페이지 제작 전문 솔루션 | 분양퍼스트'
+      ? '분양 홈페이지 웹사이트 랜딩페이지 제작 전문 | 분양퍼스트'
       : `분양웹사이트제작 ${title} | 분양퍼스트`;
   const url = `${SITE_URL}${path || '/'}`;
 

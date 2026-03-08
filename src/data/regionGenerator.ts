@@ -26,7 +26,7 @@ export function generateSubRegionPage(
     region,
     title: `${region} 분양홈페이지 제작`,
     metaTitle: `${region} 분양홈페이지 제작 | 19만원 24시간 완성`,
-    metaDescription: `${region} 분양상담사 전용 홈페이지 제작. ${keywordStr} 등 ${region} 전 지역 현장 대응. 19만원부터, 24시간 내 제작 완료. 전화·카톡 상담, 관심고객 관리, 부정클릭 차단까지.`,
+    metaDescription: `${region} 분양상담사 전용 홈페이지 제작. ${keywordStr} 등 ${region} 전 지역 현장 대응. 19만원부터, 24시간 내 제작 완료. 전화·카톡 상담, 관심고객 관리.`,
     heroHeading: `${region} 분양홈페이지 제작`,
     heroSub: '"홈페이지 있어요?" 이 질문에 바로 주소를 보여줄 수 있으신가요?',
     content: [
@@ -70,10 +70,6 @@ export function generateSubRegionPage(
       { type: 'p', text: `${region} 키워드는 경쟁이 상대적으로 낮아 적은 광고비로 상위 노출이 가능합니다. 전문 홈페이지와 결합하면 클릭 대비 상담 전환율이 크게 높아집니다.` },
 
       { type: 'break', text: 'pricing' },
-
-      { type: 'h2', text: '광고비 새는 부정클릭, 더 이상 방치하지 마세요' },
-      { type: 'p', text: '경쟁업체의 악의적 클릭이나 봇 트래픽으로 광고비가 낭비되는 피해가 실제로 발생하고 있습니다. 한정된 광고 예산이 부정클릭으로 소진되면, 실제 고객에게 노출될 기회 자체가 줄어듭니다.' },
-      { type: 'p', text: '프리미엄 플랜에 포함된 부정클릭 차단 서비스는 동일 IP 반복 클릭, 봇 클릭을 실시간으로 감지하고 차단합니다. 시중에서 월 2~3만원에 별도로 구매해야 하는 서비스가 기본으로 포함되어 있습니다.' },
     ],
     faqs: [
       { q: `${region} 분양홈페이지 제작 비용은 얼마인가요?`, a: '베이직 19만원, 디럭스 24만원, 프리미엄 29만원. 1회 결제, 1년 사용, 진행 중 무료 연장.' },

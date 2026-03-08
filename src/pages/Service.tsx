@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import {
-  Phone, MessageCircle, DollarSign, Zap, Shield,
+  Phone, MessageCircle, DollarSign, Zap,
   MapPin, Video, UserCheck, Globe, Server, Calendar,
-  CreditCard, Clock, BarChart3, Bot, Wifi, ArrowRight
+  CreditCard, Clock, BarChart3, ArrowRight
 } from 'lucide-react';
 import SectionTitle from '../components/SectionTitle';
 import SeoHead from '../components/SeoHead';
@@ -54,16 +54,14 @@ const features = [
     gradient: 'from-amber-500 to-orange-400',
   },
   {
-    icon: Shield,
+    icon: BarChart3,
     num: '04',
-    title: '부정클릭 차단 & 접속통계',
-    desc: '시중에서 월 2~3만원에 별도로 구매해야 하는 부정클릭 차단과 접속통계 서비스를 프리미엄 플랜에 기본 포함했습니다.',
+    title: '접속통계',
+    desc: '일별/주별/월별 접속통계와 유입 경로 분석을 프리미엄 플랜에 기본 포함했습니다.',
     items: [
-      { icon: Bot, text: '봇 클릭 자동 차단' },
-      { icon: Wifi, text: '동일 IP 반복 클릭 감지' },
       { icon: BarChart3, text: '일별/주별/월별 접속통계' },
       { icon: BarChart3, text: '유입 경로 분석' },
-      { icon: Shield, text: '실시간 모니터링' },
+      { icon: BarChart3, text: '실시간 모니터링' },
     ],
     gradient: 'from-purple-500 to-violet-400',
   },
@@ -73,7 +71,6 @@ const qna = [
   { q: '"홈페이지 있어요?" 물어볼 때마다 당황스럽다', a: '분양퍼스트로 24시간 내에 전문적인 홈페이지를 갖출 수 있습니다.' },
   { q: '직접 만들려니 어렵고, 외주는 너무 비싸다', a: '19만원부터 시작. 전문 디자이너가 제작해드립니다.' },
   { q: '영업에 집중해야 하는데 홈페이지까지 신경 쓸 여력이 없다', a: '자료만 보내주시면 됩니다. 제작부터 세팅까지 모두 대행합니다.' },
-  { q: '광고를 돌리는데 부정클릭으로 광고비가 새고 있다', a: '프리미엄 플랜의 부정클릭 차단으로 광고비 누수를 막아드립니다.' },
 ];
 
 export default function Service() {
@@ -81,11 +78,11 @@ export default function Service() {
     <>
       <SeoHead
         title="서비스 소개"
-        description="분양웹사이트제작 | 분양퍼스트 서비스 소개. 분양에 특화된 기능, 합리적인 비용, 24시간 제작, 부정클릭 차단. 분양상담사를 위한 홈페이지 제작 전문."
+        description="분양웹사이트제작 | 분양퍼스트 서비스 소개. 분양에 특화된 기능, 합리적인 비용, 24시간 제작. 분양상담사를 위한 홈페이지 제작 전문."
         path="/service"
         schema={getWebPageSchema({
           name: '서비스 소개 | 분양퍼스트',
-          description: '분양에 특화된 기능, 합리적인 비용, 24시간 제작, 부정클릭 차단. 분양상담사를 위한 홈페이지 제작 전문.',
+          description: '분양에 특화된 기능, 합리적인 비용, 24시간 제작. 분양상담사를 위한 홈페이지 제작 전문.',
           path: '/service',
           breadcrumbs: [
             { name: '홈', path: '/' },

@@ -66,23 +66,6 @@ export const blogPosts: BlogPost[] = [
     ],
   },
   {
-    slug: 'invalid-click-protection',
-    title: '부정클릭 차단, 왜 중요한가요?',
-    category: '마케팅 팁',
-    date: '2026.02.19',
-    readTime: '5분',
-    desc: '온라인 광고에서 부정클릭이 무엇이고, 어떻게 차단하여 광고비를 절약할 수 있는지 알아봅니다.',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
-    content: [
-      { type: 'h2', text: '부정클릭이란?' },
-      { type: 'p', text: '부정클릭은 실제 고객이 아닌 경쟁업체, 봇, 또는 악의적인 사용자가 광고를 반복적으로 클릭하여 광고비를 소진시키는 행위입니다.' },
-      { type: 'h3', text: '부정클릭의 피해 규모' },
-      { type: 'p', text: '업계에 따르면 온라인 광고 클릭의 약 15~30%가 부정클릭으로 추정됩니다. 월 50만원의 광고비를 쓴다면 7만5천원~15만원이 부정클릭으로 낭비되고 있을 수 있습니다.' },
-      { type: 'h3', text: '분양퍼스트의 부정클릭 차단' },
-      { type: 'p', text: '프리미엄 플랜에 포함된 부정클릭 차단 서비스는 동일 IP 반복 클릭, 봇 클릭 등을 실시간으로 감지하고 차단합니다. 시중에서 월 2~3만원에 제공되는 서비스를 기본으로 포함하고 있습니다.' },
-    ],
-  },
-  {
     slug: 'homepage-management-guide',
     title: '분양 홈페이지 제작 후 관리는 어떻게 하나요?',
     category: '이용 가이드',

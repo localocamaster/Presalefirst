@@ -1,11 +1,10 @@
-import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
-import { Home, Users, BarChart3, Shield } from 'lucide-react';
+import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Home, Users, BarChart3 } from 'lucide-react';
 import SeoHead from '../components/SeoHead';
 
 const navItems = [
   { to: '/admin/customers', label: '관심고객 관리', icon: Users },
   { to: '/admin/stats', label: '접속통계 관리', icon: BarChart3 },
-  { to: '/admin/fraud', label: '부정클릭 관리', icon: Shield },
 ];
 
 export default function Admin() {

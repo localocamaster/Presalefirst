@@ -19,7 +19,6 @@ import Admin from './pages/Admin';
 import ContentDemoLoader from './components/ContentDemoLoader';
 import AdminCustomers from './pages/admin/AdminCustomers';
 import AdminStats from './pages/admin/AdminStats';
-import AdminFraud from './pages/admin/AdminFraud';
 
 function Layout() {
   const { pathname } = useLocation();
@@ -57,7 +56,6 @@ function Layout() {
               <Route index element={<Navigate to="/admin/customers" replace />} />
               <Route path="customers" element={<AdminCustomers />} />
               <Route path="stats" element={<AdminStats />} />
-              <Route path="fraud" element={<AdminFraud />} />
             </Route>
         </Routes>
       </main>

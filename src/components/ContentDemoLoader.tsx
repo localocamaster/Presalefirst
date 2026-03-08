@@ -33,7 +33,8 @@ export default function ContentDemoLoader() {
   } | null>(null);
 
   useEffect(() => {
-    if (!projectId) {
+    const pid = projectId;
+    if (!pid) {
       setStatus('error');
       return;
     }
@@ -41,19 +42,20 @@ export default function ContentDemoLoader() {
     let cancelled = false;
 
     async function load() {
+      if (!pid) return;
       const reg = await getContentRegistry();
-      const entry = reg.projects.find((p) => p.projectId === projectId && p.enabled !== false);
+      const entry = reg.projects.find((p) => p.projectId === pid && p.enabled !== false);
 
-      if (entry) {
+      if (entry && entry.templateId) {
         if (premiumTemplates.has(entry.templateId)) {
-          const data = await loadPremiumContent(entry.templateId, projectId);
+          const data = await loadPremiumContent(entry.templateId, pid);
           if (!cancelled && data) {
             setContent({ type: 'premium', data, templateId: entry.templateId });
             setStatus('ready');
             return;
           }
         } else {
-          const data = await loadTemplateContent(entry.templateId, projectId);
+          const data = await loadTemplateContent(entry.templateId, pid);
           if (!cancelled && data) {
             const theme = themeMap[entry.templateId] || 'zenith';
             setContent({ type: 'template', data, templateId: entry.templateId, theme });
@@ -64,17 +66,17 @@ export default function ContentDemoLoader() {
       }
 
       if (!cancelled) {
-        const config = getProjectConfig(projectId);
-        if (config) {
+        const config = getProjectConfig(pid);
+        if (config && config.templateId) {
           if (premiumTemplates.has(config.templateId)) {
-            const data = await loadPremiumContent(config.templateId, projectId);
+            const data = await loadPremiumContent(config.templateId, pid);
             if (data) {
               setContent({ type: 'premium', data, templateId: config.templateId });
               setStatus('ready');
               return;
             }
           }
-          const templateData = loadProjectData(config.templateId, projectId);
+          const templateData = loadProjectData(config.templateId, pid);
           if (templateData) {
             const theme = config.templateId === 'category' ? undefined : (config.templateId as TemplateTheme);
             if (theme) {
